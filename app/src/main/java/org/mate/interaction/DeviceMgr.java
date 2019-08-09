@@ -255,7 +255,7 @@ public class DeviceMgr implements IApp {
 
     }
 
-    private String generateTextData(Action action) {
+    public String generateTextData(Action action) {
         Widget widget = action.getWidget();
 
         String widgetText = widget.getText();

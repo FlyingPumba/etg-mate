@@ -484,4 +484,12 @@ public class Widget {
     public Vector<Widget> getChildren() {
         return children;
     }
+
+    public int getChildPositionInParent() {
+        if (parent == null || !parent.getClazz().contains("ViewGroup")) {
+            return -1;
+        }
+
+        return parent.getChildren().indexOf(this);
+    }
 }
