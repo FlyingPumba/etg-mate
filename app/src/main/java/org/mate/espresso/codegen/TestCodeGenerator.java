@@ -87,7 +87,8 @@ public class TestCodeGenerator {
     VelocityContext velocityContext = new VelocityContext();
 
     Object[] visitedActivities = widgetTestCase.getValue().getVisitedActivities().toArray();
-    velocityContext.put("TestActivityName", visitedActivities[0]);
+    String[] activityName = visitedActivities[0].toString().split("/");
+    velocityContext.put("TestActivityName", packageName + activityName[1]);
 
     velocityContext.put("PackageName", packageName);
     velocityContext.put("ResourcePackageName", packageName);
@@ -98,7 +99,6 @@ public class TestCodeGenerator {
 
     velocityContext.put("EspressoPackageName", false ? ESPRESSO_CUSTOM_PACKAGE : ESPRESSO_STANDARD_PACKAGE);
     velocityContext.put("AddContribImport", false);
-    velocityContext.put("AddChildAtPositionMethod", false);
 
     TestCodeMapper codeMapper = new TestCodeMapper(deviceMgr);
     List<String> testCodeLines = new ArrayList<>();
@@ -107,6 +107,7 @@ public class TestCodeGenerator {
       testCodeLines.addAll(codeMapper.getTestCodeLinesForAction(action));
     }
 
+    velocityContext.put("AddChildAtPositionMethod", codeMapper.isChildAtPositionAdded());
     velocityContext.put("TestCode", testCodeLines);
 
     return velocityContext;

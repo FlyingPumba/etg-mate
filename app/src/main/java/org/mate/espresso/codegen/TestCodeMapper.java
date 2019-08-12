@@ -39,15 +39,16 @@ public class TestCodeMapper {
   private static final String VIEW_VARIABLE_CLASS_NAME = "ViewInteraction";
   private static final String CLASS_VIEW_PAGER = "android.support.v4.view.ViewPager";
 
-  private final String myApplicationId = "";
-//  private final boolean myIsUsingCustomEspresso;
-  private boolean myIsChildAtPositionAdded;
-  private boolean myIsRecyclerViewActionAdded;
+  private final String mApplicationId = "";
+
+  //  private final boolean mIsUsingCustomEspresso;
+  private boolean mIsChildAtPositionAdded = false;
+  private boolean mIsRecyclerViewActionAdded;
 
   /**
    * Map of variable_name -> first_unused_index. This map is used to ensure that variable names are unique.
    */
-  private final Map<String, Integer> myVariableNameIndexes = new HashMap<>();
+  private final Map<String, Integer> mVariableNameIndexes = new HashMap<>();
   private final DeviceMgr deviceMgr;
   private boolean USE_TEXT_FOR_ELEMENT_MATCHING = false;
 
@@ -63,8 +64,9 @@ public class TestCodeMapper {
       return testCodeLines;
     }
     else if (action.getActionType() == ActionType.MENU) {
-        testCodeLines.add("openActionBarOverflowOrOptionsMenu(getInstrumentation().getTargetContext());");
-        return testCodeLines;
+      testCodeLines.add("onView(isRoot()).perform(pressKey(KeyEvent.KEYCODE_MENU));");
+        //testCodeLines.add("openActionBarOverflowOrOptionsMenu(getInstrumentation().getTargetContext());");
+      return testCodeLines;
     }
 
 //        if (event.isDelayedMessagePost()) {
@@ -98,7 +100,7 @@ public class TestCodeMapper {
       testCodeLines.add(createActionStatement(variableName, "longClick()", false));
     }
     else if (action.getActionType() == ActionType.TYPE_TEXT) {
-//            if (myIsUsingCustomEspresso) {
+//            if (mIsUsingCustomEspresso) {
 //                testCodeLines.add(createActionStatement(variableName, "clearText()", false));
 //                testCodeLines.add(createActionStatement(
 //                        variableName, "typeText(" + boxString(event.getReplacementText()) + "), closeSoftKeyboard()", false));
@@ -106,6 +108,9 @@ public class TestCodeMapper {
       testCodeLines.add(createActionStatement(
               variableName, "replaceText(" + deviceMgr.generateTextData(action) + "), closeSoftKeyboard()", false));
 //            }
+    }
+    else if (action.getActionType() == ActionType.ENTER) {
+      // do nothing, since this is handled solely by the Espresso "replaceText" command.
     }
     else {
       throw new RuntimeException("Unsupported event type: " + action.getActionType());
@@ -134,13 +139,13 @@ public class TestCodeMapper {
 //            variableName += "_";
 //        }
 
-    Integer unusedIndex = myVariableNameIndexes.get(variableName);
+    Integer unusedIndex = mVariableNameIndexes.get(variableName);
     if (unusedIndex == null) {
-      myVariableNameIndexes.put(variableName, 2);
+      mVariableNameIndexes.put(variableName, 2);
       return variableName;
     }
 
-    myVariableNameIndexes.put(variableName, unusedIndex + 1);
+    mVariableNameIndexes.put(variableName, unusedIndex + 1);
     return variableName + unusedIndex;
   }
 
@@ -193,7 +198,7 @@ public class TestCodeMapper {
       childPosition = -1;
     }
 
-    myIsChildAtPositionAdded = myIsChildAtPositionAdded || childPosition != -1;
+    mIsChildAtPositionAdded = mIsChildAtPositionAdded || childPosition != -1;
 
     return (addAllOf ? "allOf(" : "") + matcherBuilder.getMatchers() + (matcherBuilder.getMatcherCount() > 0 ? ",\n" : "")
             + (childPosition != -1 ? "childAtPosition(\n" : "withParent(")
@@ -216,7 +221,7 @@ public class TestCodeMapper {
     }
 
     String testCodeId = "R.id." + parsedId.getSecond();
-//    if (!parsedId.getFirst().equals(myApplicationId)) {
+//    if (!parsedId.getFirst().equals(mApplicationId)) {
 //      // Only the app's resource package will be explicitly imported, so use a fully qualified id for other packages.
 //      testCodeId = parsedId.getFirst() + "." + testCodeId;
 //    }
@@ -245,5 +250,9 @@ public class TestCodeMapper {
 
   public boolean isEmpty(Widget widget) {
     return widget.getChildPositionInParent() == -1 && isEmptyIgnoringChildren(widget);
+  }
+
+  public boolean isChildAtPositionAdded() {
+    return mIsChildAtPositionAdded;
   }
 }

@@ -8,6 +8,7 @@ import org.mate.exploration.genetic.mutation.IMutationFunction;
 import org.mate.exploration.genetic.selection.IdSelectionFunction;
 import org.mate.exploration.genetic.termination.ITerminationCondition;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -31,6 +32,10 @@ public class RandomWalk<T> extends GeneticAlgorithm<T> {
      * @return new chromosome (offspring) only
      */
     public List<IChromosome<T>> getGenerationSurvivors() {
-        return Arrays.asList(population.get(population.size() - 1));
+        if (population.size() > 0) {
+            return Arrays.asList(population.get(population.size() - 1));
+        } else {
+            return new ArrayList<>();
+        }
     }
 }
