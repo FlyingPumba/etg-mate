@@ -420,6 +420,8 @@ public class MATE {
                     TestCodeGenerator codeGenerator = new TestCodeGenerator(deviceMgr);
                     List<String> espressoTestCases = codeGenerator.getEspressoTestCases(survivors);
 
+                    boolean a = true;
+
                 } else if (explorationStrategy.equals("RandomWalkStateCoverage")) {
                     uiAbstractionLayer = new UIAbstractionLayer(deviceMgr, packageName);
                     MATE.log("Starting random walk now ...");

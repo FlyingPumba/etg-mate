@@ -28,6 +28,7 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Vector;
 
 public class TestCodeGenerator {
   private final String TEST_CODE_TEMPLATE_FILE_NAME = "TestCodeTemplate.vm";
@@ -100,10 +101,10 @@ public class TestCodeGenerator {
     velocityContext.put("AddContribImport", false);
     velocityContext.put("AddChildAtPositionMethod", false);
 
-
     TestCodeMapper codeMapper = new TestCodeMapper(deviceMgr);
     List<String> testCodeLines = new ArrayList<>();
-    for (Action action : widgetTestCase.getValue().getEventSequence()) {
+    Vector<Action> actions = widgetTestCase.getValue().getEventSequence();
+    for (Action action : actions) {
       testCodeLines.addAll(codeMapper.getTestCodeLinesForAction(action));
     }
 

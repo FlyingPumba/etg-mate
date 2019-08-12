@@ -61,11 +61,10 @@ public class TestCodeMapper {
       testCodeLines.add("pressBack();");
       return testCodeLines;
     }
-
-//        if (event.isViewClick() && isOverflowMenuButton(event.getElementClassName())) {
-//            testCodeLines.add("openActionBarOverflowOrOptionsMenu(getInstrumentation().getTargetContext());");
-//            return testCodeLines;
-//        }
+    else if (action.getActionType() == ActionType.MENU) {
+        testCodeLines.add("openActionBarOverflowOrOptionsMenu(getInstrumentation().getTargetContext());");
+        return testCodeLines;
+    }
 
 //        if (event.isDelayedMessagePost()) {
 //            testCodeLines.add(createSleepStatement(event.getDelayTime()));
@@ -76,13 +75,13 @@ public class TestCodeMapper {
     if (action.getActionType() == ActionType.SWIPE_DOWN) {
       testCodeLines.add(createActionStatement(variableName, "swipeDown()", false));
     }
-    if (action.getActionType() == ActionType.SWIPE_UP) {
+    else if (action.getActionType() == ActionType.SWIPE_UP) {
       testCodeLines.add(createActionStatement(variableName, "swipeUp()", false));
     }
-    if (action.getActionType() == ActionType.SWIPE_RIGHT) {
+    else if (action.getActionType() == ActionType.SWIPE_RIGHT) {
       testCodeLines.add(createActionStatement(variableName, "swipeRight()", false));
     }
-    if (action.getActionType() == ActionType.SWIPE_LEFT) {
+    else if (action.getActionType() == ActionType.SWIPE_LEFT) {
       testCodeLines.add(createActionStatement(variableName, "swipeLeft()", false));
     }
 
@@ -91,14 +90,13 @@ public class TestCodeMapper {
 //            testCodeLines.add(createActionStatement(variableName, "pressImeActionButton()", false));
 //        } else
 
-    if (action.getActionType() == ActionType.CLICK) {
+    else if (action.getActionType() == ActionType.CLICK) {
       testCodeLines.add(createActionStatement(variableName, "click()", false));
     }
-    if (action.getActionType() == ActionType.LONG_CLICK) {
+    else if (action.getActionType() == ActionType.LONG_CLICK) {
       testCodeLines.add(createActionStatement(variableName, "longClick()", false));
     }
-
-    if (action.getActionType() == ActionType.TYPE_TEXT) {
+    else if (action.getActionType() == ActionType.TYPE_TEXT) {
 //            if (myIsUsingCustomEspresso) {
 //                testCodeLines.add(createActionStatement(variableName, "clearText()", false));
 //                testCodeLines.add(createActionStatement(
@@ -107,7 +105,8 @@ public class TestCodeMapper {
       testCodeLines.add(createActionStatement(
               variableName, "replaceText(" + deviceMgr.generateTextData(action) + "), closeSoftKeyboard()", false));
 //            }
-    } else {
+    }
+    else {
       throw new RuntimeException("Unsupported event type: " + action.getActionType());
     }
 
@@ -197,7 +196,7 @@ public class TestCodeMapper {
 
     return (addAllOf ? "allOf(" : "") + matcherBuilder.getMatchers() + (matcherBuilder.getMatcherCount() > 0 ? ",\n" : "")
             + (childPosition != -1 ? "childAtPosition(\n" : "withParent(")
-            + generateElementHierarchyConditionsRecursively(widget, index + 1)
+            + generateElementHierarchyConditionsRecursively(widget.getParent(), index + 1)
             + (childPosition != -1 ? ",\n" + childPosition : "") + ")"
             + (addIsDisplayed ? ",\nisDisplayed()" : "") + (addAllOf ? ")" : "");
   }
