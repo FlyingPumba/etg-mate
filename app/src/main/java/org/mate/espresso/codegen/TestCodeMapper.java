@@ -35,6 +35,7 @@ import static org.mate.espresso.util.StringHelper.parseId;
 
 public class TestCodeMapper {
 
+  private static final int MAX_HIERARCHY_VIEW_LEVEL = 2;
   private static final String VIEW_VARIABLE_CLASS_NAME = "ViewInteraction";
   private static final String CLASS_VIEW_PAGER = "android.support.v4.view.ViewPager";
 
@@ -177,7 +178,7 @@ public class TestCodeMapper {
     // TODO: Consider minimizing the generated statement to improve test's readability and maintainability (e.g., by capping parent hierarchy).
 
     // The last element has no parent.
-    if (widget.getParent() == null) {
+    if (widget.getParent() == null || index > MAX_HIERARCHY_VIEW_LEVEL) {
       if (matcherBuilder.getMatcherCount() > 1 || addIsDisplayed) {
         return "allOf(" + matcherBuilder.getMatchers() + (addIsDisplayed ? ", isDisplayed()" : "") + ")";
       }
