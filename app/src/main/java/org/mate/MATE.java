@@ -417,7 +417,7 @@ public class MATE {
                     }, MATE.TIME_OUT);
 
                     List<IChromosome<TestCase>> survivors = randomWalk.getGenerationSurvivors();
-                    TestCodeGenerator codeGenerator = new TestCodeGenerator(deviceMgr);
+                    TestCodeGenerator codeGenerator = new TestCodeGenerator(deviceMgr, packageName);
                     List<String> espressoTestCases = codeGenerator.getEspressoTestCases(survivors);
 
                     boolean a = true;

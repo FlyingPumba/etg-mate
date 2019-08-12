@@ -37,9 +37,11 @@ public class TestCodeGenerator {
   private final String ESPRESSO_STANDARD_PACKAGE = "android.support.test";
 
   private final DeviceMgr deviceMgr;
+  private String packageName;
 
-  public TestCodeGenerator(DeviceMgr deviceMgr) {
+  public TestCodeGenerator(DeviceMgr deviceMgr, String packageName) {
     this.deviceMgr = deviceMgr;
+    this.packageName = packageName;
   }
 
   public List<String> getEspressoTestCases(List<IChromosome<TestCase>> widgetTestCases) {
@@ -84,14 +86,11 @@ public class TestCodeGenerator {
   private VelocityContext createVelocityContext(IChromosome<TestCase> widgetTestCase, int testCaseIndex) {
     VelocityContext velocityContext = new VelocityContext();
 
-    // FIX: use the proper Activity Name
-    velocityContext.put("TestActivityName", "FILL WITH VISITED ACTIVITY");
+    Object[] visitedActivities = widgetTestCase.getValue().getVisitedActivities().toArray();
+    velocityContext.put("TestActivityName", visitedActivities[0]);
 
-    // FIX: use the proper Package Name
-    velocityContext.put("PackageName", "aPackageName");
-
-    // FIX: use the proper Resource Package Name
-    velocityContext.put("ResourcePackageName", "aResourcePackageName");
+    velocityContext.put("PackageName", packageName);
+    velocityContext.put("ResourcePackageName", packageName);
 
     // TODO: improve test name based on TestCase's visitedActivities
     velocityContext.put("ClassName", String.format("TestCase%d", testCaseIndex));
