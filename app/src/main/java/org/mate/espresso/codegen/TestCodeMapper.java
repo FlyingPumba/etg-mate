@@ -134,6 +134,7 @@ public class TestCodeMapper {
 
 
   private String generateVariableNameFromTemplate(String template) {
+    template = template.replace(".", "_");
     String variableName = Character.toLowerCase(template.charAt(0)) + template.substring(1);
 //        if (JavaLexer.isKeyword(variableName, LanguageLevel.HIGHEST)) {
 //            variableName += "_";
