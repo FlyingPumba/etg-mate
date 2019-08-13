@@ -18,7 +18,6 @@ public class TestCodeTemplate {
                 "\n" +
                 "import static ${EspressoPackageName}.InstrumentationRegistry.getInstrumentation;\n" +
                 "import static ${EspressoPackageName}.espresso.Espresso.onView;\n" +
-                "import static ${EspressoPackageName}.espresso.Espresso.pressBack;\n" +
                 "import static ${EspressoPackageName}.espresso.Espresso.openActionBarOverflowOrOptionsMenu;\n" +
                 "#if (${AddContribImport})\n" +
                 "import static ${EspressoPackageName}.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition;\n" +

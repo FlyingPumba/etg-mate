@@ -60,7 +60,7 @@ public class TestCodeMapper {
     List<String> testCodeLines = new ArrayList<>();
 
     if (action.getActionType() == ActionType.BACK) {
-      testCodeLines.add("pressBack()" + getStatementTerminator());
+      testCodeLines.add("pressBackUnconditionally()" + getStatementTerminator());
       return testCodeLines;
     }
     else if (action.getActionType() == ActionType.MENU) {

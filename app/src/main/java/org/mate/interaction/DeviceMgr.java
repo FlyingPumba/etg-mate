@@ -79,7 +79,7 @@ public class DeviceMgr implements IApp {
                 break;
 
             case ActionType.BACK:
-                device.pressBack();;
+                device.pressBack();
                 break;
 
             case ActionType.MENU:
