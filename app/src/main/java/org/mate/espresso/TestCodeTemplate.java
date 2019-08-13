@@ -11,7 +11,7 @@ public class TestCodeTemplate {
                 "import ${EspressoPackageName}.espresso.ViewInteraction;\n" +
                 "import android.support.test.rule.ActivityTestRule;\n" +
                 "import android.support.test.runner.AndroidJUnit4;\n" +
-                "import android.test.suitebuilder.annotation.LargeTest;\n" +
+                "import android.support.test.filters.LargeTest;\n" +
                 "import android.view.View;\n" +
                 "import android.view.ViewGroup;\n" +
                 "import android.view.ViewParent;\n" +

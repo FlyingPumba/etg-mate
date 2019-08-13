@@ -485,8 +485,24 @@ public class Widget {
         return children;
     }
 
-    public int getChildPositionInParent() {
-        if (parent == null || !parent.getClazz().contains("ViewGroup")) {
+    public int getRecyclerViewChildPosition() {
+        if (parent == null || !parent.getClazz().equals("android.support.v7.widget.RecyclerView")) {
+            return -1;
+        }
+
+        return parent.getChildren().indexOf(this);
+    }
+
+    public int getAdapterViewChildPosition() {
+        if (getRecyclerViewChildPosition() != -1 || parent == null || !parent.getClazz().contains("Adapter")) {
+            return -1;
+        }
+
+        return parent.getChildren().indexOf(this);
+    }
+
+    public int getGroupViewChildPosition() {
+        if (getAdapterViewChildPosition() != -1 || parent == null || !parent.getClazz().contains("ViewGroup")) {
             return -1;
         }
 
