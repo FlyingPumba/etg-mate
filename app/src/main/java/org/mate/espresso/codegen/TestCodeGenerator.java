@@ -98,7 +98,6 @@ public class TestCodeGenerator {
     velocityContext.put("TestMethodName", "myTestCase");
 
     velocityContext.put("EspressoPackageName", false ? ESPRESSO_CUSTOM_PACKAGE : ESPRESSO_STANDARD_PACKAGE);
-    velocityContext.put("AddContribImport", false);
 
     TestCodeMapper codeMapper = new TestCodeMapper(deviceMgr);
     List<String> testCodeLines = new ArrayList<>();
@@ -107,6 +106,7 @@ public class TestCodeGenerator {
       testCodeLines.addAll(codeMapper.getTestCodeLinesForAction(action));
     }
 
+    velocityContext.put("AddContribImport", codeMapper.isRecyclerViewActionAdded());
     velocityContext.put("AddChildAtPositionMethod", codeMapper.isChildAtPositionAdded());
     velocityContext.put("TestCode", testCodeLines);
 

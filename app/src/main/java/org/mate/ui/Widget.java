@@ -506,6 +506,8 @@ public class Widget {
             return -1;
         }
 
-        return parent.getChildren().indexOf(this);
+        // the following does not work reliably, so I'm turning it off in the meantime.
+        // return parent.getChildren().indexOf(this);
+        return -1;
     }
 }
