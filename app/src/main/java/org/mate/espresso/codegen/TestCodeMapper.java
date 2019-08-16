@@ -65,8 +65,8 @@ public class TestCodeMapper {
       return testCodeLines;
     }
     else if (action.getActionType() == ActionType.MENU) {
-      // testCodeLines.add("onView(isRoot()).perform(pressKey(KeyEvent.KEYCODE_MENU));");
-      testCodeLines.add("openActionBarOverflowOrOptionsMenu(getInstrumentation().getTargetContext())" + getStatementTerminator());
+      //testCodeLines.add("openActionBarOverflowOrOptionsMenu(getInstrumentation().getTargetContext())" + getStatementTerminator());
+      testCodeLines.add("onView(isRoot()).perform(pressKey(KeyEvent.KEYCODE_MENU));");
       return testCodeLines;
     }
 
