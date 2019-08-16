@@ -173,8 +173,18 @@ public class TestCodeMapper {
     String variableClassName = startIndex == 0 ? action.getWidget().getClazz() : action.getWidget().getParent().getClazz();
     String variableName = generateVariableNameFromElementClassName(variableClassName, VIEW_VARIABLE_CLASS_NAME);
 
+    String viewMatchers = generateElementHierarchyConditions(action, startIndex);
+
+    if ("isDisplayed()".equals(viewMatchers)) {
+      // this means that the action has an empty widget as a target
+      viewMatchers = "isRoot()";
+    } else if (!viewMatchers.contains("R.id")) {
+      // this view matcher using only parents is too unspecific, try to use childs as well
+      viewMatchers = "";
+    }
+
     testCodeLines.add(getVariableTypeDeclaration(true) + " " + variableName + " = onView(\n" +
-            generateElementHierarchyConditions(action, startIndex) + ")" + getStatementTerminator());
+            viewMatchers + ")" + getStatementTerminator());
 
     return variableName;
   }
