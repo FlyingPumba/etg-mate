@@ -90,7 +90,6 @@ public class TestCodeTemplate {
                 "\n" +
                 "                do {\n" +
                 "                    canonicalName = clazz.getCanonicalName();\n" +
-                "                    System.out.println(canonicalName);\n" +
                 "                    if (canonicalName == null) {\n" +
                 "                        return false;\n" +
                 "                    }\n" +
@@ -108,6 +107,7 @@ public class TestCodeTemplate {
                 "                return false;\n" +
                 "            }\n" +
                 "        };\n" +
+                "    }\n" +
                 "    #end\n" +
                 "}";
     }
