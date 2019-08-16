@@ -73,7 +73,6 @@ public class TestCodeTemplate {
                 "        };\n" +
                 "    }\n" +
                 "    #end\n" +
-                "}" +
                 "    #if (${AddclassOrSuperClassesNameMethod})\n" +
                 "private static Matcher<View> classOrSuperClassesName(final Matcher<String> classNameMatcher) {\n" +
                 "\n" +

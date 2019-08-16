@@ -42,10 +42,7 @@ public class MatcherBuilder {
         if (isAssertionMatcher) {
           matchers.append("IsInstanceOf.<View>instanceOf(" + matchedString + ".class)");
         } else {
-          String[] classNameParts = matchedString.split(".");
-          matchers.append("classOrSuperClassesName(containsString(" +
-                  boxString(classNameParts[classNameParts.length - 1])
-                  + "))");
+          matchers.append("classOrSuperClassesName(is(" + boxString(matchedString) + "))");
         }
       } else {
         matchers.append("with").append(kind.name()).append("(")
