@@ -15,11 +15,13 @@
  */
 package org.mate.espresso.codegen;
 
+import org.mate.MATE;
 import org.mate.espresso.util.Pair;
 import org.mate.interaction.DeviceMgr;
 import org.mate.ui.Action;
 import org.mate.ui.ActionType;
 import org.mate.ui.Widget;
+import org.mate.utils.Randomness;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -141,7 +143,28 @@ public class TestCodeMapper {
     if (isAdapterViewAction(action)) {
       return addDataPickingStatement(action, testCodeLines);
     }
-    return addViewPickingStatement(action, testCodeLines);
+    String statement = addViewPickingStatement(action, testCodeLines);
+
+    if (!statement.contains("R.id") ||
+            !statement.contains("withContentDescription") ||
+            !statement.contains("withText")) {
+      // this view pick statement is too unspecific, try to start the creation of the statement from the lowest children
+
+      int actionType = action.getActionType();
+      Widget target = action.getWidget();
+
+      while (target.getChildren().size() > 0) {
+        target = Randomness.randomElement(target.getChildren());
+      }
+
+      // remove from testCodeLines the view picking statement
+      testCodeLines.remove(testCodeLines.size() - 1);
+
+      // regenerate statement
+      statement = addViewPickingStatement(new Action(target, actionType), testCodeLines);
+    }
+
+    return statement;
   }
 
   private String addDataPickingStatement(Action action, List<String> testCodeLines) {
@@ -178,9 +201,6 @@ public class TestCodeMapper {
     if ("isDisplayed()".equals(viewMatchers)) {
       // this means that the action has an empty widget as a target
       viewMatchers = "isRoot()";
-    } else if (!viewMatchers.contains("R.id")) {
-      // this view matcher using only parents is too unspecific, try to use childs as well
-      viewMatchers = "";
     }
 
     testCodeLines.add(getVariableTypeDeclaration(true) + " " + variableName + " = onView(\n" +
