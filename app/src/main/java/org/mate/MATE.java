@@ -402,7 +402,7 @@ public class MATE {
                             .withAlgorithm(RandomWalk.ALGORITHM_NAME)
                             .withChromosomeFactory(AndroidRandomChromosomeFactory.CHROMOSOME_FACTORY_ID)
                             .withMutationFunction(CutPointMutationFunction.MUTATION_FUNCTION_ID)
-                            .withTerminationCondition(NeverTerminationCondition.TERMINATION_CONDITION_ID)
+                            .withTerminationCondition(IterTerminationCondition.TERMINATION_CONDITION_ID)
                             .withFitnessFunction(ActivityFitnessFunction.FITNESS_FUNCTION_ID)
                             .withMaxNumEvents(50);
 

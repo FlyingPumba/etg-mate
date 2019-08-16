@@ -108,6 +108,7 @@ public class TestCodeGenerator {
 
     velocityContext.put("AddContribImport", codeMapper.isRecyclerViewActionAdded());
     velocityContext.put("AddChildAtPositionMethod", codeMapper.isChildAtPositionAdded());
+    velocityContext.put("AddclassOrSuperClassesNameMethod", codeMapper.isClassOrSuperClassesNameAdded());
     velocityContext.put("TestCode", testCodeLines);
 
     return velocityContext;

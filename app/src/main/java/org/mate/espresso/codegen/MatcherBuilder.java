@@ -38,11 +38,18 @@ public class MatcherBuilder {
         matchers.append(", ");
       }
 
-      if (kind == Kind.ClassName && isAssertionMatcher) {
-        matchers.append("IsInstanceOf.<View>instanceOf(" + matchedString + ".class)");
+      if (kind == Kind.ClassName) {
+        if (isAssertionMatcher) {
+          matchers.append("IsInstanceOf.<View>instanceOf(" + matchedString + ".class)");
+        } else {
+          String[] classNameParts = matchedString.split(".");
+          matchers.append("classOrSuperClassesName(containsString(" +
+                  boxString(classNameParts[classNameParts.length - 1])
+                  + "))");
+        }
       } else {
-        matchers.append("with").append(kind.name()).append(kind == Kind.ClassName ? "(is(" : "(")
-                .append(shouldBox ? boxString(matchedString) : matchedString).append(kind == Kind.ClassName ? "))" : ")");
+        matchers.append("with").append(kind.name()).append("(")
+                .append(shouldBox ? boxString(matchedString) : matchedString).append(")");
       }
 
       matcherCount++;

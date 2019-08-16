@@ -43,8 +43,9 @@ public class TestCodeMapper {
 
   private boolean mIsChildAtPositionAdded = false;
   private boolean mIsRecyclerViewActionAdded = false;
+  private boolean mIsclassOrSuperClassesNameAdded = false;
   private boolean mIsKotlinTestClass = false;
-  private boolean mUseTextForElementMatching = false;
+  private boolean mUseTextForElementMatching = true;
 
   /**
    * Map of variable_name -> first_unused_index. This map is used to ensure that variable names are unique.
@@ -227,11 +228,13 @@ public class TestCodeMapper {
             || widget.getParent() == null && isEmptyIgnoringChildPosition(widget)
             || index == 0 && isLoginRadioButton(widget)) {
       matcherBuilder.addMatcher(ClassName, widget.getClazz(), true, false);
+      mIsclassOrSuperClassesNameAdded = true;
     } else {
       // Do not use android framework ids that are not visible to the compiler.
       String resourceId = widget.getResourceID();
       if (isAndroidFrameworkPrivateId(resourceId)) {
         matcherBuilder.addMatcher(ClassName, widget.getClazz(), true, false);
+        mIsclassOrSuperClassesNameAdded = true;
       } else {
         matcherBuilder.addMatcher(Id, convertIdToTestCodeFormat(resourceId), false, false);
       }
@@ -343,5 +346,9 @@ public class TestCodeMapper {
 
   private String getStatementTerminator() {
     return mIsKotlinTestClass ? "" : ";";
+  }
+
+  public boolean isClassOrSuperClassesNameAdded() {
+    return mIsclassOrSuperClassesNameAdded;
   }
 }
