@@ -1,6 +1,7 @@
 package org.mate.state.executables;
 
 import android.app.Instrumentation;
+import android.app.UiAutomation;
 import android.content.SharedPreferences;
 import android.graphics.Rect;
 import android.os.RemoteException;
@@ -48,7 +49,8 @@ public class AppScreen {
 
         Instrumentation instrumentation =  getInstrumentation();
         device = UiDevice.getInstance(instrumentation);
-        AccessibilityNodeInfo ninfo= InstrumentationRegistry.getInstrumentation().getUiAutomation().getRootInActiveWindow();
+        UiAutomation uiAutomation = getInstrumentation().getUiAutomation();
+        AccessibilityNodeInfo ninfo= uiAutomation.getRootInActiveWindow();
         if (ninfo==null) {
             MATE.log("APP DISCONNECTED");
 
