@@ -63,12 +63,13 @@ public class TestCodeMapper {
     List<String> testCodeLines = new ArrayList<>();
 
     if (action.getActionType() == ActionType.BACK) {
-      testCodeLines.add("pressBackUnconditionally()" + getStatementTerminator());
+      //testCodeLines.add("pressBackUnconditionally()" + getStatementTerminator());
+      testCodeLines.add("onView(isRoot()).perform(pressBack())" + getStatementTerminator());
       return testCodeLines;
     }
     else if (action.getActionType() == ActionType.MENU) {
       //testCodeLines.add("openActionBarOverflowOrOptionsMenu(getInstrumentation().getTargetContext())" + getStatementTerminator());
-      testCodeLines.add("onView(isRoot()).perform(pressKey(KeyEvent.KEYCODE_MENU));");
+      testCodeLines.add("onView(isRoot()).perform(pressKey(KeyEvent.KEYCODE_MENU))"  + getStatementTerminator());
       return testCodeLines;
     }
 
