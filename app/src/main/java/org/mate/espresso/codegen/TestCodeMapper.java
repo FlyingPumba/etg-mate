@@ -64,7 +64,7 @@ public class TestCodeMapper {
 
     if (action.getActionType() == ActionType.BACK) {
       //testCodeLines.add("pressBackUnconditionally()" + getStatementTerminator());
-      testCodeLines.add("onView(isRoot()).perform(pressBack())" + getStatementTerminator());
+      testCodeLines.add("onView(isRoot()).perform(pressBackUnconditionally())" + getStatementTerminator());
       return testCodeLines;
     }
     else if (action.getActionType() == ActionType.MENU) {
@@ -146,24 +146,46 @@ public class TestCodeMapper {
     }
     String statement = addViewPickingStatement(action, testCodeLines);
 
-    if (!statement.contains("R.id") ||
-            !statement.contains("withContentDescription") ||
+    int actionType = action.getActionType();
+    Widget target = action.getWidget();
+
+    // check if this view pick statement is too unspecific.
+    // If so, try to start the creation of the statement with a more specific children
+    Widget childrenWithSomeText = target.getChildrenWithContentDescriptionOrText();
+    Widget childrenWithRId = target.getChildrenWithRId();
+
+    MATE.log("Statement prior rewrite: " + testCodeLines.get(0));
+
+    if (childrenWithSomeText != null &&
+            !statement.contains("withContentDescription") &&
             !statement.contains("withText")) {
-      // this view pick statement is too unspecific, try to start the creation of the statement from the lowest children
+      // there as a child with some text to make the statement more specific
 
-      int actionType = action.getActionType();
-      Widget target = action.getWidget();
+      testCodeLines.remove(testCodeLines.size() - 1);
+      statement = addViewPickingStatement(new Action(childrenWithSomeText, actionType), testCodeLines);
 
-      while (target.getChildren().size() > 0) {
+    } else if (childrenWithRId != null &&
+            !statement.contains("R.id")) {
+      // there is a child with R.id to make the statement more specific
+
+      testCodeLines.remove(testCodeLines.size() - 1);
+      statement = addViewPickingStatement(new Action(childrenWithRId, actionType), testCodeLines);
+
+    } else if (!target.getChildren().isEmpty() &&
+            !statement.contains("withContentDescription") &&
+            !statement.contains("withText") &&
+            !statement.contains("R.id")) {
+      // there is a child that might make this statement more specific
+
+      while (!target.getChildren().isEmpty()) {
         target = Randomness.randomElement(target.getChildren());
       }
 
-      // remove from testCodeLines the view picking statement
       testCodeLines.remove(testCodeLines.size() - 1);
-
-      // regenerate statement
       statement = addViewPickingStatement(new Action(target, actionType), testCodeLines);
     }
+
+    MATE.log("Statement post rewrite: " + testCodeLines.get(0));
 
     return statement;
   }

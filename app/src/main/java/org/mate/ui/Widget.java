@@ -1,6 +1,8 @@
 package org.mate.ui;
 
 
+import org.mate.utils.Randomness;
+
 import java.util.HashSet;
 import java.util.Set;
 import java.util.Vector;
@@ -509,5 +511,44 @@ public class Widget {
         // the following does not work reliably, so I'm turning it off in the meantime.
         // return parent.getChildren().indexOf(this);
         return -1;
+    }
+
+    public Widget getChildrenWithRId() {
+        Vector<Widget> children = getChildren();
+        Randomness.shuffleList(children);
+        for (Widget child : children) {
+            // first, try to find a leaf element that has R.id in the hierarchy of my child
+            Widget childrenWithRId = child.getChildrenWithRId();
+            if (childrenWithRId != null) {
+                return childrenWithRId;
+            }
+
+            // if unsuccessful, check whether the child is itself a leaf that has R.id
+            if (child.getChildren().isEmpty() && child.getId().contains("R.id")) {
+                return child;
+            }
+        }
+        // otherwise, return null
+        return null;
+    }
+
+    public Widget getChildrenWithContentDescriptionOrText() {
+        Vector<Widget> children = getChildren();
+        Randomness.shuffleList(children);
+        for (Widget child : children) {
+            // first, try to find a leaf element that has content description or text in the hierarchy of my child
+            Widget childrenWithSomeText = child.getChildrenWithContentDescriptionOrText();
+            if (childrenWithSomeText != null) {
+                return childrenWithSomeText;
+            }
+
+            // if unsuccessful, check whether the child is itself a leaf that has content description or text
+            if (child.getChildren().isEmpty() &&
+                    (!child.getContentDesc().isEmpty() || !child.getText().isEmpty())) {
+                return child;
+            }
+        }
+        // otherwise, return null
+        return null;
     }
 }
