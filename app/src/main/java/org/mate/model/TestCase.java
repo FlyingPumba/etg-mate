@@ -1,5 +1,7 @@
 package org.mate.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import org.mate.MATE;
 import org.mate.interaction.UIAbstractionLayer;
 import org.mate.state.IScreenState;
@@ -21,8 +23,14 @@ public class TestCase {
     private float novelty;
     private boolean crashDetected;
     private double sparseness;
+
+    @JsonIgnore
     private HashMap<String, String> statesMap;
+
+    @JsonIgnore
     private HashMap<String, Integer> featureVector;
+
+    @JsonIgnore
     private Optional<Integer> desiredSize = Optional.none();
 
 
@@ -42,6 +50,7 @@ public class TestCase {
         this.desiredSize = desiredSize;
     }
 
+    @JsonIgnore
     public Optional<Integer> getDesiredSize() {
         return desiredSize;
     }
@@ -96,10 +105,13 @@ public class TestCase {
             //MATE.log_acc("TEST___added to states map the state: "+state+" at event: "+event);
         }
     }
+
+    @JsonIgnore
     public HashMap<String, String> getStatesMap() {
         return statesMap;
     }
 
+    @JsonIgnore
     public HashMap<String, Integer> getFeatureVector() {
         return featureVector;
     }

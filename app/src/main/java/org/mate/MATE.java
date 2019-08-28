@@ -423,15 +423,13 @@ public class MATE {
                     // TestCodeGenerator codeGenerator = new TestCodeGenerator(deviceMgr, packageName);
                     // List<String> espressoTestCases = codeGenerator.getEspressoTestCases(survivors);
 
-                    // write event sequences to JSON
-                    List<Vector<Action>> testCases = new ArrayList<>();
-                    for (IChromosome<TestCase> testCase: survivors) {
-                        testCases.add(testCase.getValue().getEventSequence());
+                    List<TestCase> testCases = new ArrayList<>();
+                    for (IChromosome<TestCase> survivor : survivors) {
+                        testCases.add(survivor.getValue());
                     }
 
+                    // write test cases to JSON and save in Server
                     ObjectMapper mapper = new ObjectMapper();
-
-                    // Java object to JSON string
                     String jsonString = mapper.writeValueAsString(testCases);
                     EnvironmentManager.storeJsonTestCases(jsonString);
 
