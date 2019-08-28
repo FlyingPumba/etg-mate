@@ -1,6 +1,8 @@
 package org.mate.ui;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import org.mate.utils.Randomness;
 
 import java.util.HashSet;
@@ -73,6 +75,7 @@ public class Widget {
         this.hasChildren = hasChildren;
     }
 
+    @JsonIgnore
     public Widget getParent() {
         return parent;
     }
@@ -324,7 +327,7 @@ public class Widget {
         return false;
     }
 
-
+    @JsonIgnore
     public Vector<Widget> getNextChildWithText(){
         Vector<Widget> ws = new Vector<Widget>();
         for (Widget child: children){
@@ -338,6 +341,7 @@ public class Widget {
         return ws;
     }
 
+    @JsonIgnore
     public Vector<Widget> getNextChildWithDescContentText(){
         Vector<Widget> ws = new Vector<Widget>();
 
@@ -513,6 +517,7 @@ public class Widget {
         return -1;
     }
 
+    @JsonIgnore
     public Widget getChildrenWithRId() {
         Vector<Widget> children = getChildren();
         Randomness.shuffleList(children);
@@ -532,6 +537,7 @@ public class Widget {
         return null;
     }
 
+    @JsonIgnore
     public Widget getChildrenWithContentDescriptionOrText() {
         Vector<Widget> children = getChildren();
         Randomness.shuffleList(children);

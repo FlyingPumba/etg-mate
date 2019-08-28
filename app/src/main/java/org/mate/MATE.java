@@ -9,7 +9,8 @@ import android.support.test.InstrumentationRegistry;
 import android.support.test.uiautomator.UiDevice;
 import android.util.Log;
 
-import org.mate.espresso.codegen.TestCodeGenerator;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import org.mate.exceptions.AUTCrashException;
 import org.mate.exploration.genetic.algorithm.MOSA;
 import org.mate.exploration.genetic.algorithm.Mio;
@@ -54,6 +55,7 @@ import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -417,10 +419,21 @@ public class MATE {
                     }, MATE.TIME_OUT);
 
                     List<IChromosome<TestCase>> survivors = randomWalk.getGenerationSurvivors();
-                    TestCodeGenerator codeGenerator = new TestCodeGenerator(deviceMgr, packageName);
-                    List<String> espressoTestCases = codeGenerator.getEspressoTestCases(survivors);
 
-                    boolean a = true;
+                    // TestCodeGenerator codeGenerator = new TestCodeGenerator(deviceMgr, packageName);
+                    // List<String> espressoTestCases = codeGenerator.getEspressoTestCases(survivors);
+
+                    // write event sequences to JSON
+                    List<Vector<Action>> testCases = new ArrayList<>();
+                    for (IChromosome<TestCase> testCase: survivors) {
+                        testCases.add(testCase.getValue().getEventSequence());
+                    }
+
+                    ObjectMapper mapper = new ObjectMapper();
+
+                    // Java object to JSON string
+                    String jsonString = mapper.writeValueAsString(testCases);
+                    EnvironmentManager.storeJsonTestCases(jsonString);
 
                 } else if (explorationStrategy.equals("RandomWalkStateCoverage")) {
                     uiAbstractionLayer = new UIAbstractionLayer(deviceMgr, packageName);
