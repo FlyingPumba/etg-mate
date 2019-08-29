@@ -491,6 +491,7 @@ public class Widget {
         return children;
     }
 
+    @JsonIgnore
     public int getRecyclerViewChildPosition() {
         if (parent == null || !parent.getClazz().equals("android.support.v7.widget.RecyclerView")) {
             return -1;
@@ -499,6 +500,7 @@ public class Widget {
         return parent.getChildren().indexOf(this);
     }
 
+    @JsonIgnore
     public int getAdapterViewChildPosition() {
         if (getRecyclerViewChildPosition() != -1 || parent == null || !parent.getClazz().contains("Adapter")) {
             return -1;
@@ -507,6 +509,7 @@ public class Widget {
         return parent.getChildren().indexOf(this);
     }
 
+    @JsonIgnore
     public int getGroupViewChildPosition() {
         if (getAdapterViewChildPosition() != -1 || parent == null || !parent.getClazz().contains("ViewGroup")) {
             return -1;
