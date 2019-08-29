@@ -18,7 +18,10 @@ import java.util.Vector;
 public class TestCase {
     private String id;
     private Set<String> visitedActivities;
+
+    @JsonIgnore
     private Set<String> visitedStates;
+
     private Vector<Action> eventSequence;
     private float novelty;
     private boolean crashDetected;
@@ -73,6 +76,7 @@ public class TestCase {
 
     public void updateVisitedStates(IScreenState GUIState){this.visitedStates.add(GUIState.getId());};
 
+    @JsonIgnore
     public Set<String> getVisitedStates() {
         return visitedStates;
     }
