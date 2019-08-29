@@ -420,9 +420,6 @@ public class MATE {
 
                     List<IChromosome<TestCase>> survivors = randomWalk.getGenerationSurvivors();
 
-                    // TestCodeGenerator codeGenerator = new TestCodeGenerator(deviceMgr, packageName);
-                    // List<String> espressoTestCases = codeGenerator.getEspressoTestCases(survivors);
-
                     List<TestCase> testCases = new ArrayList<>();
                     for (IChromosome<TestCase> survivor : survivors) {
                         testCases.add(survivor.getValue());
