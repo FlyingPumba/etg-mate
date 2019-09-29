@@ -199,7 +199,7 @@ public class MATE {
                             genericGA.run();
                             return null;
                         }
-                    }, MATE.TIME_OUT);
+                    }, 999999999);
 
                     if (Properties.STORE_COVERAGE) {
                         EnvironmentManager.storeCoverageData(genericGA, null);
