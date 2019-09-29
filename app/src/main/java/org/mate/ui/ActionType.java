@@ -4,9 +4,6 @@ package org.mate.ui;
  * Created by marceloeler on 22/06/17.
  */
 
-/**
- * TODO: this should be an enum!!!
- */
 public enum  ActionType {
 
     CLICK,
