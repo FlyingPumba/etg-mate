@@ -39,54 +39,54 @@ public class DeviceMgr implements IApp {
     public void executeAction(Action action) throws AUTCrashException{
         MATE.log(" ____ execute " + action.getActionType() + " on " + action.getWidget().getId() + "  : " + action.getWidget().getText() + "  hint: " + action.getWidget().getHint());
         Widget selectedWidget = action.getWidget();
-        int typeOfAction = action.getActionType();
+        ActionType typeOfAction = action.getActionType();
 
         switch (typeOfAction){
 
-            case ActionType.CLICK:
+            case CLICK:
                 handleClick(selectedWidget);
                 break;
 
-            case ActionType.LONG_CLICK:
+            case LONG_CLICK:
                 handleLongPress(selectedWidget);
                 break;
 
-            case ActionType.TYPE_TEXT:
+            case TYPE_TEXT:
                 handleEdit(action);
                 break;
 
-            case ActionType.CLEAR_WIDGET:
+            case CLEAR_WIDGET:
                 handleClear(selectedWidget);
                 break;
 
-            case ActionType.SWIPE_DOWN:
+            case SWIPE_DOWN:
                 handleSwipe(selectedWidget, 0);
                 break;
 
-            case ActionType.SWIPE_UP:
+            case SWIPE_UP:
                 handleSwipe(selectedWidget, 1);
                 break;
 
-            case ActionType.SWIPE_LEFT:
+            case SWIPE_LEFT:
                 handleSwipe(selectedWidget, 2);
                 break;
 
-            case ActionType.SWIPE_RIGHT:
+            case SWIPE_RIGHT:
                 handleSwipe(selectedWidget, 3);
                 break;
 
-            case ActionType.WAIT:
+            case WAIT:
                 break;
 
-            case ActionType.BACK:
+            case BACK:
                 device.pressBack();
                 break;
 
-            case ActionType.MENU:
+            case MENU:
                 device.pressMenu();
                 break;
 
-            case ActionType.ENTER:
+            case ENTER:
                 device.pressEnter();
                 break;
 
