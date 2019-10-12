@@ -199,7 +199,7 @@ public class MATE {
                             genericGA.run();
                             return null;
                         }
-                    }, 999999999);
+                    }, MATE.TIME_OUT);
 
                     if (Properties.STORE_COVERAGE) {
                         EnvironmentManager.storeCoverageData(genericGA, null);
@@ -416,7 +416,7 @@ public class MATE {
                             randomWalk.run();
                             return null;
                         }
-                    }, MATE.TIME_OUT);
+                    }, 999999999);
 
                     List<IChromosome<TestCase>> survivors = randomWalk.getGenerationSurvivors();
 

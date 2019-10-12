@@ -7,7 +7,7 @@ public class IterTerminationCondition implements ITerminationCondition {
     private int maxIterations;
 
     public IterTerminationCondition(int maxIterations) {
-        this.maxIterations = maxIterations;
+        this.maxIterations = 1;//maxIterations;
         iterations = 0;
     }
     @Override
