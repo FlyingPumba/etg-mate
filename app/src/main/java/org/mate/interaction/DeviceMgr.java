@@ -39,54 +39,45 @@ public class DeviceMgr implements IApp {
     public void executeAction(Action action) throws AUTCrashException{
         MATE.log(" ____ execute " + action.getActionType() + " on " + action.getWidget().getId() + "  : " + action.getWidget().getText() + "  hint: " + action.getWidget().getHint());
         Widget selectedWidget = action.getWidget();
-        int typeOfAction = action.getActionType();
+        ActionType typeOfAction = action.getActionType();
 
         switch (typeOfAction){
 
-            case ActionType.CLICK:
+            case CLICK:
                 handleClick(selectedWidget);
                 break;
 
-            case ActionType.LONG_CLICK:
+            case LONG_CLICK:
                 handleLongPress(selectedWidget);
                 break;
 
-            case ActionType.TYPE_TEXT:
+            case TYPE_TEXT:
                 handleEdit(action);
                 break;
 
-            case ActionType.CLEAR_WIDGET:
+            case CLEAR_WIDGET:
                 handleClear(selectedWidget);
                 break;
 
-            case ActionType.SWIPE_DOWN:
-                handleSwipe(selectedWidget, 0);
+            case SWIPE_DOWN:
+            case SWIPE_UP:
+            case SWIPE_RIGHT:
+            case SWIPE_LEFT:
+                handleSwipe(selectedWidget, typeOfAction);
                 break;
 
-            case ActionType.SWIPE_UP:
-                handleSwipe(selectedWidget, 1);
+            case WAIT:
                 break;
 
-            case ActionType.SWIPE_LEFT:
-                handleSwipe(selectedWidget, 2);
-                break;
-
-            case ActionType.SWIPE_RIGHT:
-                handleSwipe(selectedWidget, 3);
-                break;
-
-            case ActionType.WAIT:
-                break;
-
-            case ActionType.BACK:
+            case BACK:
                 device.pressBack();
                 break;
 
-            case ActionType.MENU:
+            case MENU:
                 device.pressMenu();
                 break;
 
-            case ActionType.ENTER:
+            case ENTER:
                 device.pressEnter();
                 break;
 
@@ -114,7 +105,7 @@ public class DeviceMgr implements IApp {
             obj.setText("");
     }
 
-    public void handleSwipe(Widget widget, int direction){
+    public void handleSwipe(Widget widget, ActionType actionType){
 
         int pixelsmove=300;
         int X = 0;
@@ -135,22 +126,25 @@ public class DeviceMgr implements IApp {
         else{
             X = device.getDisplayWidth()/2;
             Y = device.getDisplayHeight()/2;
-            if (direction==0 || direction==1)
+            if (actionType==ActionType.SWIPE_DOWN || actionType==ActionType.SWIPE_UP)
                 pixelsmove=Y;
             else
                 pixelsmove=X;
         }
 
         //50 pixels has been arbitrarily selected - create a properties file in the future
-        switch (direction){
-            case 0: device.swipe(X, Y, X, Y-pixelsmove,steps);
+        switch (actionType){
+            case SWIPE_DOWN:
+                device.swipe(X, Y, X, Y-pixelsmove,steps);
                 break;
-
-            case 1: device.swipe(X, Y, X, Y+pixelsmove,steps);
+            case SWIPE_UP:
+                device.swipe(X, Y, X, Y+pixelsmove,steps);
                 break;
-            case 2: device.swipe(X, Y, X+pixelsmove, Y,steps);
+            case SWIPE_LEFT:
+                device.swipe(X, Y, X+pixelsmove, Y,steps);
                 break;
-            case 3: device.swipe(X, Y, X-pixelsmove, Y,steps);
+            case SWIPE_RIGHT:
+                device.swipe(X, Y, X-pixelsmove, Y,steps);
                 break;
         }
     }
