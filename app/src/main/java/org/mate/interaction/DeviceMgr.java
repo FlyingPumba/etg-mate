@@ -60,19 +60,10 @@ public class DeviceMgr implements IApp {
                 break;
 
             case SWIPE_DOWN:
-                handleSwipe(selectedWidget, 0);
-                break;
-
             case SWIPE_UP:
-                handleSwipe(selectedWidget, 1);
-                break;
-
-            case SWIPE_LEFT:
-                handleSwipe(selectedWidget, 2);
-                break;
-
             case SWIPE_RIGHT:
-                handleSwipe(selectedWidget, 3);
+            case SWIPE_LEFT:
+                handleSwipe(selectedWidget, typeOfAction);
                 break;
 
             case WAIT:
@@ -114,7 +105,7 @@ public class DeviceMgr implements IApp {
             obj.setText("");
     }
 
-    public void handleSwipe(Widget widget, int direction){
+    public void handleSwipe(Widget widget, ActionType actionType){
 
         int pixelsmove=300;
         int X = 0;
@@ -135,22 +126,25 @@ public class DeviceMgr implements IApp {
         else{
             X = device.getDisplayWidth()/2;
             Y = device.getDisplayHeight()/2;
-            if (direction==0 || direction==1)
+            if (actionType==ActionType.SWIPE_DOWN || actionType==ActionType.SWIPE_UP)
                 pixelsmove=Y;
             else
                 pixelsmove=X;
         }
 
         //50 pixels has been arbitrarily selected - create a properties file in the future
-        switch (direction){
-            case 0: device.swipe(X, Y, X, Y-pixelsmove,steps);
+        switch (actionType){
+            case SWIPE_DOWN:
+                device.swipe(X, Y, X, Y-pixelsmove,steps);
                 break;
-
-            case 1: device.swipe(X, Y, X, Y+pixelsmove,steps);
+            case SWIPE_UP:
+                device.swipe(X, Y, X, Y+pixelsmove,steps);
                 break;
-            case 2: device.swipe(X, Y, X+pixelsmove, Y,steps);
+            case SWIPE_LEFT:
+                device.swipe(X, Y, X+pixelsmove, Y,steps);
                 break;
-            case 3: device.swipe(X, Y, X-pixelsmove, Y,steps);
+            case SWIPE_RIGHT:
+                device.swipe(X, Y, X-pixelsmove, Y,steps);
                 break;
         }
     }
