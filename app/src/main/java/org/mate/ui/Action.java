@@ -1,5 +1,9 @@
 package org.mate.ui;
 
+import android.graphics.Point;
+import android.support.annotation.Nullable;
+import android.support.v4.util.Pair;
+
 import java.util.Objects;
 import java.util.Vector;
 
@@ -18,6 +22,7 @@ public class Action {
     private long timeToWait;
     private float pheromone;
     private float proportionalPheromone;
+    private @Nullable Swipe swipe;
 
 
     private Vector<Action> adjActions;
@@ -38,6 +43,15 @@ public class Action {
         setExtraInfo("");
         adjActions = new Vector<Action>();
         setExecuted(false);
+    }
+
+    public void setSwipe(Swipe swipe) {
+        this.swipe = swipe;
+    }
+
+    @Nullable
+    public Swipe getSwipe() {
+        return swipe;
     }
 
     public void setExecuted(boolean executed) {
@@ -95,6 +109,13 @@ public class Action {
 
     public void setProportionalPheromone(float proportionalPheromone) {
         this.proportionalPheromone = proportionalPheromone;
+    }
+
+    public boolean isSwipe(){
+        return getActionType().equals(ActionType.SWIPE_DOWN)
+                || getActionType().equals(ActionType.SWIPE_UP)
+                || getActionType().equals(ActionType.SWIPE_LEFT)
+                || getActionType().equals(ActionType.SWIPE_RIGHT);
     }
 
     @Override

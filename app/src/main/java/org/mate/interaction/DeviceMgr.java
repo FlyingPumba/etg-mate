@@ -2,6 +2,7 @@ package org.mate.interaction;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Point;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.uiautomator.By;
 import android.support.test.uiautomator.UiDevice;
@@ -9,6 +10,7 @@ import android.support.test.uiautomator.UiObject;
 import android.support.test.uiautomator.UiObject2;
 import android.support.test.uiautomator.UiObjectNotFoundException;
 import android.support.test.uiautomator.UiSelector;
+import android.support.v4.util.Pair;
 import android.text.InputType;
 
 import org.mate.MATE;
@@ -18,6 +20,7 @@ import org.mate.model.IGUIModel;
 import org.mate.ui.Action;
 import org.mate.ui.ActionType;
 import org.mate.ui.EnvironmentManager;
+import org.mate.ui.Swipe;
 import org.mate.ui.Widget;
 
 import java.util.List;
@@ -63,7 +66,7 @@ public class DeviceMgr implements IApp {
             case SWIPE_UP:
             case SWIPE_RIGHT:
             case SWIPE_LEFT:
-                handleSwipe(selectedWidget, typeOfAction);
+                handleSwipe(selectedWidget, action);
                 break;
 
             case WAIT:
@@ -105,7 +108,8 @@ public class DeviceMgr implements IApp {
             obj.setText("");
     }
 
-    public void handleSwipe(Widget widget, ActionType actionType){
+    public void handleSwipe(Widget widget, Action action){
+        if (!action.isSwipe()) throw new IllegalArgumentException("can't handle swipe from non swipe action");
 
         int pixelsmove=300;
         int X = 0;
@@ -126,27 +130,36 @@ public class DeviceMgr implements IApp {
         else{
             X = device.getDisplayWidth()/2;
             Y = device.getDisplayHeight()/2;
-            if (actionType==ActionType.SWIPE_DOWN || actionType==ActionType.SWIPE_UP)
+            if (action.getActionType()==ActionType.SWIPE_DOWN || action.getActionType()==ActionType.SWIPE_UP)
                 pixelsmove=Y;
             else
                 pixelsmove=X;
         }
 
+        Point swipeInitialPoint = new Point(X, Y);
+        Point swipeFinalPoint;
+
         //50 pixels has been arbitrarily selected - create a properties file in the future
-        switch (actionType){
+        switch (action.getActionType()){
             case SWIPE_DOWN:
-                device.swipe(X, Y, X, Y-pixelsmove,steps);
+                swipeFinalPoint = new Point(X, Y-pixelsmove);
                 break;
             case SWIPE_UP:
-                device.swipe(X, Y, X, Y+pixelsmove,steps);
+                swipeFinalPoint = new Point(X, Y+pixelsmove);
                 break;
             case SWIPE_LEFT:
-                device.swipe(X, Y, X+pixelsmove, Y,steps);
+                swipeFinalPoint = new Point(X+pixelsmove, Y);
                 break;
             case SWIPE_RIGHT:
-                device.swipe(X, Y, X-pixelsmove, Y,steps);
+                swipeFinalPoint = new Point(X-pixelsmove, Y);
                 break;
+            default:
+                throw new IllegalArgumentException("can't handle swipe action type from " + action.getActionType());
         }
+
+        device.swipe(swipeInitialPoint.x, swipeInitialPoint.y, swipeFinalPoint.x, swipeFinalPoint.y, steps);
+        Swipe swipe = new Swipe(swipeInitialPoint, swipeFinalPoint, steps);
+        action.setSwipe(swipe);
     }
 
     public void handleLongPress(Widget widget) {
