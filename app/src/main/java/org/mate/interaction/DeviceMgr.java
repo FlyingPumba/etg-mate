@@ -114,7 +114,7 @@ public class DeviceMgr implements IApp {
         int pixelsmove=300;
         int X = 0;
         int Y = 0;
-        int steps = 15;
+        int steps = 30;
 
         if (!widget.getClazz().equals("")){
             UiObject2 obj = findObject(widget);
