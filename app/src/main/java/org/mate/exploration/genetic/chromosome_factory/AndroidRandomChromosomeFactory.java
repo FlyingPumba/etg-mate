@@ -8,12 +8,9 @@ import org.mate.exploration.genetic.fitness.LineCoveredPercentageFitnessFunction
 import org.mate.model.TestCase;
 import org.mate.ui.Action;
 import org.mate.interaction.UIAbstractionLayer;
-import org.mate.ui.ActionType;
 import org.mate.ui.EnvironmentManager;
 import org.mate.utils.Randomness;
 
-import java.util.ArrayList;
-import java.util.List;
 
 public class AndroidRandomChromosomeFactory implements IChromosomeFactory<TestCase> {
     public static final String CHROMOSOME_FACTORY_ID = "android_random_chromosome_factory";
@@ -67,26 +64,7 @@ public class AndroidRandomChromosomeFactory implements IChromosomeFactory<TestCa
         return chromosome;
     }
 
-//mas propenso a hacer swipes down y up
     protected Action selectAction() {
-        List<Action> executableActions = new ArrayList<>();
-
-       for (Action action: uiAbstractionLayer.getExecutableActions()) {
-           if (action.getActionType().equals(ActionType.SWIPE_DOWN) || action.getActionType().equals(ActionType.SWIPE_UP)) {
-               executableActions.add(action);
-           }
-       }
-
-        if (Randomness.getRnd().nextInt(2) != 0){
-            executableActions.clear();
-        }
-
-       if (executableActions.isEmpty()){
-           executableActions.addAll(uiAbstractionLayer.getExecutableActions());
-       }
-
-       return Randomness.randomElement(executableActions);
-
-//        return Randomness.randomElement(uiAbstractionLayer.getExecutableActions());
+        return Randomness.randomElement(uiAbstractionLayer.getExecutableActions());
     }
 }

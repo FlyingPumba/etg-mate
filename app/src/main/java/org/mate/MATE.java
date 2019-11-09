@@ -416,7 +416,7 @@ public class MATE {
                             randomWalk.run();
                             return null;
                         }
-                    }, 999999999);
+                    }, MATE.TIME_OUT);
 
                     List<IChromosome<TestCase>> survivors = randomWalk.getGenerationSurvivors();
 
