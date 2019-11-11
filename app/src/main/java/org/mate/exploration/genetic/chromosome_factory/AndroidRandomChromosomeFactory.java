@@ -11,6 +11,7 @@ import org.mate.interaction.UIAbstractionLayer;
 import org.mate.ui.EnvironmentManager;
 import org.mate.utils.Randomness;
 
+
 public class AndroidRandomChromosomeFactory implements IChromosomeFactory<TestCase> {
     public static final String CHROMOSOME_FACTORY_ID = "android_random_chromosome_factory";
 
