@@ -3,15 +3,16 @@ package org.mate.interaction;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Point;
-import android.support.test.InstrumentationRegistry;
-import android.support.test.uiautomator.By;
-import android.support.test.uiautomator.UiDevice;
-import android.support.test.uiautomator.UiObject;
-import android.support.test.uiautomator.UiObject2;
-import android.support.test.uiautomator.UiObjectNotFoundException;
-import android.support.test.uiautomator.UiSelector;
-import android.support.v4.util.Pair;
+import androidx.test.platform.app.InstrumentationRegistry;
+import androidx.test.uiautomator.By;
+import androidx.test.uiautomator.UiDevice;
+import androidx.test.uiautomator.UiObject;
+import androidx.test.uiautomator.UiObject2;
+import androidx.test.uiautomator.UiObjectNotFoundException;
+import androidx.test.uiautomator.UiSelector;
+import androidx.core.util.Pair;
 import android.text.InputType;
+import android.util.Log;
 
 import org.mate.MATE;
 import org.mate.datagen.DataGenerator;
@@ -31,11 +32,11 @@ import java.util.List;
 
 public class DeviceMgr implements IApp {
 
-    private UiDevice device;
+//    private UiDevice device;
     private String packageName;
 
     public DeviceMgr(UiDevice device, String packageName){
-        this.device = device;
+//        this.device = device;
         this.packageName = packageName;
     }
 
@@ -73,15 +74,22 @@ public class DeviceMgr implements IApp {
                 break;
 
             case BACK:
-                device.pressBack();
+                int i = 0;
+                boolean worked = false;
+                while (!worked && i < 10){
+                    i++;
+                    worked = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation()).pressBack();
+                    Log.e("Back pressed " + i, String.valueOf(worked));
+                }
+                if (!worked) throw new RuntimeException("Can't perform back!");
                 break;
 
             case MENU:
-                device.pressMenu();
+                //UiDevice.getInstance(InstrumentationRegistry.getInstrumentation()).pressMenu();
                 break;
 
             case ENTER:
-                device.pressEnter();
+                UiDevice.getInstance(InstrumentationRegistry.getInstrumentation()).pressEnter();
                 break;
 
         }
@@ -99,7 +107,7 @@ public class DeviceMgr implements IApp {
     }
 
     public void handleClick(Widget widget){
-        device.click(widget.getX(),widget.getY());
+        UiDevice.getInstance(InstrumentationRegistry.getInstrumentation()).click(widget.getX(),widget.getY());
     }
 
     public void handleClear(Widget widget){
@@ -128,8 +136,8 @@ public class DeviceMgr implements IApp {
             }
         }
         else{
-            X = device.getDisplayWidth()/2;
-            Y = device.getDisplayHeight()/2;
+            X = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation()).getDisplayWidth()/2;
+            Y = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation()).getDisplayHeight()/2;
             if (action.getActionType()==ActionType.SWIPE_DOWN || action.getActionType()==ActionType.SWIPE_UP)
                 pixelsmove=Y;
             else
@@ -157,7 +165,7 @@ public class DeviceMgr implements IApp {
                 throw new IllegalArgumentException("can't handle swipe action type from " + action.getActionType());
         }
 
-        device.swipe(swipeInitialPoint.x, swipeInitialPoint.y, swipeFinalPoint.x, swipeFinalPoint.y, steps);
+        UiDevice.getInstance(InstrumentationRegistry.getInstrumentation()).swipe(swipeInitialPoint.x, swipeInitialPoint.y, swipeFinalPoint.x, swipeFinalPoint.y, steps);
         Swipe swipe = new Swipe(swipeInitialPoint, swipeFinalPoint, steps);
         action.setSwipe(swipe);
     }
@@ -170,7 +178,7 @@ public class DeviceMgr implements IApp {
             X = obj.getVisibleBounds().centerX();
             Y = obj.getVisibleBounds().centerY();
         }
-        device.swipe(X, Y, X, Y,120);
+        UiDevice.getInstance(InstrumentationRegistry.getInstrumentation()).swipe(X, Y, X, Y,120);
     }
 
     public void sleep(long time){
@@ -182,7 +190,7 @@ public class DeviceMgr implements IApp {
     }
 
     private UiObject2 findObject(Widget widget){
-        List<UiObject2> objs = device.findObjects(By.res(widget.getId()));
+        List<UiObject2> objs = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation()).findObjects(By.res(widget.getId()));
         if (objs!=null){
             if (objs.size()==1)
                 return objs.get(0);
@@ -195,7 +203,7 @@ public class DeviceMgr implements IApp {
         }
 
         //if no obj has been found by id, and then text if there is more than one object with the same id
-        objs = device.findObjects(By.text(widget.getText()));
+        objs = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation()).findObjects(By.text(widget.getText()));
         if (objs!=null){
             if (objs.size()==1)
                 return objs.get(0);
@@ -217,21 +225,21 @@ public class DeviceMgr implements IApp {
 
         if (widget.getResourceID().equals("")){
             if (!widget.getText().equals("")) {
-                UiObject2 obj = device.findObject(By.text(widget.getText()));
+                UiObject2 obj = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation()).findObject(By.text(widget.getText()));
                 if (obj != null) {
                     obj.setText(textData);
                 }
             }
             else{
-                device.click(widget.getX(),widget.getY());
-                UiObject2 obj = device.findObject(By.focused(true));
+                UiDevice.getInstance(InstrumentationRegistry.getInstrumentation()).click(widget.getX(),widget.getY());
+                UiObject2 obj = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation()).findObject(By.focused(true));
                 if (obj!=null){
                     obj.setText(textData);
                 }
             }
         }
         else{
-            List<UiObject2> objs = device.findObjects(By.res(widget.getId()));
+            List<UiObject2> objs = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation()).findObjects(By.res(widget.getId()));
             if (objs!=null && objs.size()>0){
                 int i=0;
                 int size = objs.size();
@@ -349,7 +357,7 @@ public class DeviceMgr implements IApp {
     public void restartApp() {
             MATE.log("Restarting app");
             // Launch the app
-            Context context = InstrumentationRegistry.getContext();
+            Context context = InstrumentationRegistry.getInstrumentation().getContext();
             final Intent intent = context.getPackageManager()
                     .getLaunchIntentForPackage(packageName);
             // Clear out any previous instances
@@ -370,7 +378,7 @@ public class DeviceMgr implements IApp {
                 "OK", "Cancel", "Yes", "No", "Dismiss"
         };
         for (String keyword : COMMON_BUTTONS) {
-            button = device.findObject(new UiSelector().text(keyword).enabled(true));
+            button = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation()).findObject(new UiSelector().text(keyword).enabled(true));
             if (button != null && button.exists()) {
                 break;
             }

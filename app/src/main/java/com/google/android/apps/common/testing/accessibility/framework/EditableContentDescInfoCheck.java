@@ -20,7 +20,7 @@ import com.google.eyesfree.utils.AccessibilityNodeInfoUtils;
 import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.view.accessibility.AccessibilityNodeInfoCompat;
+import androidx.core.view.accessibility.AccessibilityNodeInfoCompat;
 import android.text.TextUtils;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.EditText;

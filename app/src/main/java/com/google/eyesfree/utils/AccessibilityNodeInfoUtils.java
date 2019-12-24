@@ -19,10 +19,12 @@ package com.google.eyesfree.utils;
 import android.content.Context;
 import android.graphics.Rect;
 import android.os.Build;
-import android.support.v4.view.accessibility.AccessibilityNodeInfoCompat;
+import androidx.core.view.accessibility.AccessibilityNodeInfoCompat;
 import android.text.TextUtils;
 import android.util.Log;
 
+
+import androidx.viewpager.widget.ViewPager;
 
 import com.google.eyesfree.utils.compat.CompatUtils;
 
@@ -1029,7 +1031,7 @@ public class AccessibilityNodeInfoUtils {
      * <p>
      * Specifically excludes {@link android.widget.AdapterViewAnimator} and
      * sub-classes, since they represent overlapping views. Also excludes
-     * {@link android.support.v4.view.ViewPager} since it exclusively represents
+     * {@link ViewPager} since it exclusively represents
      * off-screen views.
      */
     private static final NodeFilter FILTER_AUTO_SCROLL = new NodeFilter() {

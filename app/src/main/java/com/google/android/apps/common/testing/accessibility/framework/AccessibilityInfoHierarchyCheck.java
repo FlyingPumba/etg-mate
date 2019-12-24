@@ -18,14 +18,12 @@ package com.google.android.apps.common.testing.accessibility.framework;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.v4.view.accessibility.AccessibilityNodeInfoCompat;
+import androidx.core.view.accessibility.AccessibilityNodeInfoCompat;
 import android.view.accessibility.AccessibilityNodeInfo;
 
 
 import com.google.eyesfree.utils.AccessibilityNodeInfoUtils;
 import com.google.eyesfree.utils.NodeFilter;
-
-import org.mate.exploration.random.UniformRandomForAccessibility;
 
 import java.util.List;
 

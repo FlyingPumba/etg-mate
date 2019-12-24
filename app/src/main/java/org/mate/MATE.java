@@ -5,8 +5,8 @@ import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.support.test.InstrumentationRegistry;
-import android.support.test.uiautomator.UiDevice;
+import androidx.test.platform.app.InstrumentationRegistry;
+import androidx.test.uiautomator.UiDevice;
 import android.util.Log;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -63,7 +63,7 @@ import java.util.Set;
 import java.util.Vector;
 import java.util.concurrent.Callable;
 
-import static android.support.test.InstrumentationRegistry.getInstrumentation;
+import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
 
 /**
  * Created by marceloe on 07/03/17.
@@ -92,7 +92,7 @@ public class MATE {
     public static Set<String> visitedActivities = new HashSet<String>();
 
     public MATE() {
-        try (FileInputStream fis = InstrumentationRegistry.getTargetContext().openFileInput("port");
+        try (FileInputStream fis = InstrumentationRegistry.getInstrumentation().getTargetContext().openFileInput("port");
              BufferedReader reader = new BufferedReader(new InputStreamReader(fis))) {
             EnvironmentManager.port = Integer.valueOf(reader.readLine());
             MATE.log_acc("Using server port: " + EnvironmentManager.port);
@@ -416,7 +416,7 @@ public class MATE {
                             randomWalk.run();
                             return null;
                         }
-                    }, MATE.TIME_OUT);
+                    }, 999999999);
 
                     List<IChromosome<TestCase>> survivors = randomWalk.getGenerationSurvivors();
 

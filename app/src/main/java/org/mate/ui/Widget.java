@@ -80,6 +80,19 @@ public class Widget {
         return parent;
     }
 
+    public Vector<Widget> getChildrenWithNoParentReference() {
+        for (Widget child:children) {
+            child.parent = null;
+        }
+        return children;
+    }
+
+    //to use on json serialize only.
+    public Widget getParentWithNoChildReference() {
+        if (parent != null) parent.children.clear();
+        return parent;
+    }
+
     public void setParent(Widget parent) {
         this.parent = parent;
     }
@@ -487,6 +500,7 @@ public class Widget {
         return true;
     }
 
+    @JsonIgnore
     public Vector<Widget> getChildren() {
         return children;
     }

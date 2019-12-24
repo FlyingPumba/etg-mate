@@ -1,6 +1,6 @@
 package org.mate.accessibility;
 
-import android.support.test.InstrumentationRegistry;
+import androidx.test.platform.app.InstrumentationRegistry;
 
 import com.google.android.apps.common.testing.accessibility.framework.AccessibilityCheckResult;
 import com.google.android.apps.common.testing.accessibility.framework.AccessibilityCheckResultUtils;
@@ -28,7 +28,7 @@ public class AccessibilityInfoChecker {
         List<AccessibilityInfoCheckResult> results = new LinkedList<AccessibilityInfoCheckResult>();
         for (AccessibilityInfoHierarchyCheck check : checks) {
             try{
-                results.addAll(check.runCheckOnInfoHierarchy(state.getRootAccessibilityNodeInfo(),InstrumentationRegistry.getContext()));
+                results.addAll(check.runCheckOnInfoHierarchy(state.getRootAccessibilityNodeInfo(),InstrumentationRegistry.getInstrumentation().getContext()));
             }
             catch(Exception e){
                 MATE.log("exception while running check: " + check.toString());
