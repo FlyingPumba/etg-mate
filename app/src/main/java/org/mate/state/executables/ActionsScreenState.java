@@ -247,7 +247,6 @@ public class ActionsScreenState extends AbstractScreenState {
         if (activityName.contains("GoogleOAuthActivity"))
             executables = new Vector<Action>();
         executables.add(new Action(ActionType.BACK));
-        executables.add(new Action(ActionType.MENU));
 
         actions = executables;
         return executables;
