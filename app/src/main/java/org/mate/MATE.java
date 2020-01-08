@@ -124,6 +124,10 @@ public class MATE {
         //get the name of the package of the app currently running
         this.packageName = device.getCurrentPackageName();
 
+        // fetch emulator before calling handleAuth method, otherwise it will throw an exception on
+        // MATE server when sending a null emulator
+        EnvironmentManager.detectEmulator(this.packageName);
+
         //checks whether user needs to authorize access to something on the device/emulator
         handleAuth(device);
         MATE.log("Package name: " + this.packageName);
