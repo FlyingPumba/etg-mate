@@ -120,6 +120,10 @@ public class AppScreen {
         String res = obj.getViewIdResourceName();
         if (res==null)
             res="";
+
+        //if widget is an android view, otuside application scope
+        if (res.startsWith("android:id/")) return null;
+
         widget.setResourceID(res);
 
         widget.setParent(parent);
