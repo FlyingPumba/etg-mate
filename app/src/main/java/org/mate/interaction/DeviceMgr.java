@@ -32,7 +32,7 @@ import java.util.List;
 
 public class DeviceMgr implements IApp {
 
-    public UiDevice device;
+    private UiDevice device;
     private String packageName;
 
     public DeviceMgr(String packageName){
