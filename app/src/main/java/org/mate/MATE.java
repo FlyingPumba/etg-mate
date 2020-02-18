@@ -141,7 +141,7 @@ public class MATE {
         runningTime = new Date().getTime();
         try {
             if (emulator != null && !emulator.equals("")) {
-                this.deviceMgr = new DeviceMgr(device, packageName);
+                this.deviceMgr = new DeviceMgr(packageName);
 
                 if (explorationStrategy.equals("OnePlusOneNew")) {
                     uiAbstractionLayer = new UIAbstractionLayer(deviceMgr, packageName);
@@ -416,7 +416,7 @@ public class MATE {
                             randomWalk.run();
                             return null;
                         }
-                    }, 999999999);
+                    }, MATE.TIME_OUT);
 
                     List<IChromosome<TestCase>> survivors = randomWalk.getGenerationSurvivors();
 
@@ -483,7 +483,7 @@ public class MATE {
             boolean goOn = true;
             while (goOn) {
 
-                DeviceMgr dmgr = new DeviceMgr(device, "");
+                DeviceMgr dmgr = new DeviceMgr("");
                 IScreenState screenState = ScreenStateFactory.getScreenState("ActionsScreenState");
                 Vector<Action> actions = screenState.getActions();
                 for (Action action : actions) {

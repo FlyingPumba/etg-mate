@@ -32,11 +32,9 @@ import java.util.List;
 
 public class DeviceMgr implements IApp {
 
-//    private UiDevice device;
     private String packageName;
 
-    public DeviceMgr(UiDevice device, String packageName){
-//        this.device = device;
+    public DeviceMgr(String packageName){
         this.packageName = packageName;
     }
 
@@ -85,7 +83,7 @@ public class DeviceMgr implements IApp {
                 break;
 
             case MENU:
-                //UiDevice.getInstance(InstrumentationRegistry.getInstrumentation()).pressMenu();
+                UiDevice.getInstance(InstrumentationRegistry.getInstrumentation()).pressMenu();
                 break;
 
             case ENTER:
