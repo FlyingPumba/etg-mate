@@ -84,9 +84,10 @@ public class DeviceMgr implements IApp {
                 if (!worked) throw new RuntimeException("Can't perform back!");
                 break;
 
-            case MENU:
-                device.pressMenu();
-                break;
+            //Se comenta menu porque se  realizará esta acción mediante un click en los items de menu
+//            case MENU:
+//                device.pressMenu();
+//                break;
 
             case ENTER:
                 device.pressEnter();
