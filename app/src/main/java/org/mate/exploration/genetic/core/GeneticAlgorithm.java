@@ -181,4 +181,7 @@ public abstract class GeneticAlgorithm<T> implements IGeneticAlgorithm<T> {
         }
     }
 
+    public List<IFitnessFunction<T>> getFitnessFunctions() {
+        return fitnessFunctions;
+    }
 }

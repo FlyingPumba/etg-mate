@@ -18,6 +18,7 @@ import java.util.Vector;
 public class TestCase {
     private String id;
     private Set<String> visitedActivities;
+    private double coverage;
 
     @JsonIgnore
     private Set<String> visitedStates;
@@ -36,11 +37,11 @@ public class TestCase {
     @JsonIgnore
     private Optional<Integer> desiredSize = Optional.none();
 
-
     public TestCase(String id){
         setId(id);
         crashDetected = false;
         visitedActivities = new HashSet<>();
+        coverage = 0;
         visitedStates = new HashSet<>();
         eventSequence = new Vector<>();
         sparseness = 0;
@@ -211,5 +212,13 @@ public class TestCase {
         updateVisitedStates(currentScreenstate);
         updateVisitedActivities(currentScreenstate.getActivityName());
         updateStatesMap(currentScreenstate.getId(), event);
+    }
+
+    public void setCoverage(double coverage) {
+        this.coverage = coverage;
+    }
+
+    public double getCoverage() {
+        return this.coverage;
     }
 }

@@ -27,6 +27,7 @@ import org.mate.exploration.genetic.crossover.UniformSuiteCrossoverFunction;
 import org.mate.exploration.genetic.fitness.ActivityFitnessFunction;
 import org.mate.exploration.genetic.fitness.AmountCrashesFitnessFunction;
 import org.mate.exploration.genetic.fitness.AndroidStateFitnessFunction;
+import org.mate.exploration.genetic.fitness.IFitnessFunction;
 import org.mate.exploration.genetic.fitness.LineCoveredPercentageFitnessFunction;
 import org.mate.exploration.genetic.fitness.StatementCoverageFitnessFunction;
 import org.mate.exploration.genetic.fitness.TestLengthFitnessFunction;
@@ -400,6 +401,25 @@ public class MATE {
                             return null;
                         }
                     }, MATE.TIME_OUT);
+
+                    List<IChromosome<TestCase>> survivors = randomWalk.getGenerationSurvivors();
+
+                    List<TestCase> testCases = new ArrayList<>();
+                    for (IChromosome<TestCase> survivor : survivors) {
+                        TestCase testCase = survivor.getValue();
+
+                        List<IFitnessFunction<TestCase>> fitnessFunctions = randomWalk.getFitnessFunctions();
+                        IFitnessFunction<TestCase> fitnessFunction = fitnessFunctions.get(0);
+                        testCase.setCoverage(fitnessFunction.getFitness(survivor));
+
+                        testCases.add(testCase);
+                    }
+
+                    // write test cases to JSON and save in Server
+                    ObjectMapper mapper = new ObjectMapper();
+                    String jsonString = mapper.writeValueAsString(testCases);
+                    EnvironmentManager.storeJsonTestCases(jsonString);
+
                 } else if (explorationStrategy.equals("RandomWalkActivityCoverage")) {
                     uiAbstractionLayer = new UIAbstractionLayer(deviceMgr, packageName);
                     MATE.log("Starting random walk now ...");

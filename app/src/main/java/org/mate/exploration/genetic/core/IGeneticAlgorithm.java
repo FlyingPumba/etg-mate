@@ -1,6 +1,7 @@
 package org.mate.exploration.genetic.core;
 
 import org.mate.exploration.genetic.chromosome.IChromosome;
+import org.mate.exploration.genetic.fitness.IFitnessFunction;
 
 import java.util.List;
 
@@ -33,4 +34,6 @@ public interface IGeneticAlgorithm<T> {
     void run();
 
     List<IChromosome<T>> getGenerationSurvivors();
+
+    List<IFitnessFunction<T>> getFitnessFunctions();
 }
