@@ -411,6 +411,7 @@ public class MATE {
                         List<IFitnessFunction<TestCase>> fitnessFunctions = randomWalk.getFitnessFunctions();
                         IFitnessFunction<TestCase> fitnessFunction = fitnessFunctions.get(0);
                         testCase.setCoverage(fitnessFunction.getFitness(survivor));
+                        testCase.setChromosomeHash(survivor.toString());
 
                         testCases.add(testCase);
                     }

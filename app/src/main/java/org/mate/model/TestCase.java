@@ -19,6 +19,7 @@ public class TestCase {
     private String id;
     private Set<String> visitedActivities;
     private double coverage;
+    private String chromosomeHash;
 
     @JsonIgnore
     private Set<String> visitedStates;
@@ -220,5 +221,13 @@ public class TestCase {
 
     public double getCoverage() {
         return this.coverage;
+    }
+
+    public String getChromosomeHash() {
+        return chromosomeHash;
+    }
+
+    public void setChromosomeHash(String chromosomeHash) {
+        this.chromosomeHash = chromosomeHash;
     }
 }
