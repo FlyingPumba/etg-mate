@@ -4,26 +4,22 @@ import android.app.Instrumentation;
 import android.app.UiAutomation;
 import android.content.SharedPreferences;
 import android.graphics.Rect;
-import android.os.RemoteException;
 import android.preference.PreferenceManager;
-import android.support.test.InstrumentationRegistry;
-import android.support.test.uiautomator.By;
-import android.support.test.uiautomator.StaleObjectException;
-import android.support.test.uiautomator.UiDevice;
-import android.support.test.uiautomator.UiObject2;
-import android.view.accessibility.AccessibilityNodeInfo;
 
-import android.content.Context;
+import androidx.test.uiautomator.By;
+import androidx.test.uiautomator.StaleObjectException;
+import androidx.test.uiautomator.UiDevice;
+import androidx.test.uiautomator.UiObject2;
+import android.view.accessibility.AccessibilityNodeInfo;
 
 import org.mate.MATE;
 import org.mate.ui.Widget;
 import org.mate.ui.EnvironmentManager;
 
 import java.util.Hashtable;
-import java.util.List;
 import java.util.Vector;
 
-import static android.support.test.InstrumentationRegistry.getInstrumentation;
+import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
 
 /**
  * Created by marceloeler on 21/06/17.
@@ -124,6 +120,10 @@ public class AppScreen {
         String res = obj.getViewIdResourceName();
         if (res==null)
             res="";
+
+        //if widget is an android view, otuside application scope
+        if (res.startsWith("android:id/")) return null;
+
         widget.setResourceID(res);
 
         widget.setParent(parent);

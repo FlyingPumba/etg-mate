@@ -1,7 +1,9 @@
 package org.mate.ui;
 
 
+import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import org.mate.utils.Randomness;
 
@@ -487,6 +489,7 @@ public class Widget {
         return true;
     }
 
+    @JsonIgnore
     public Vector<Widget> getChildren() {
         return children;
     }
@@ -560,4 +563,32 @@ public class Widget {
         // otherwise, return null
         return null;
     }
+
+
+
+
+
+
+
+    /**Used only for serialization purpose**/
+    //TODO: copy objects
+
+    @JsonProperty("children")
+    public Vector<Widget> getChildrenWithNoParentReference() {
+        for (Widget child:children) {
+            child.parent = null;
+        }
+        return children;
+    }
+
+
+    @JsonProperty("parent")
+    public Widget getParentWithNoChildReference() {
+        if (parent != null) parent.children.clear();
+        return parent;
+    }
+
+
+
+
 }

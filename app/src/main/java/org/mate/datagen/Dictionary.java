@@ -1,16 +1,12 @@
 package org.mate.datagen;
 
 import android.content.res.AssetManager;
-import android.content.res.Resources;
-import android.support.test.InstrumentationRegistry;
+
+import androidx.test.platform.app.InstrumentationRegistry;
 
 import org.mate.MATE;
-import org.mate.R;
 
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -25,7 +21,7 @@ public class Dictionary {
     private static Vector<String> words = null;
 
     private static void loadWords(){
-        AssetManager assetManager = InstrumentationRegistry.getTargetContext().getResources().getAssets();
+        AssetManager assetManager = InstrumentationRegistry.getInstrumentation().getTargetContext().getResources().getAssets();
         try {
             String[] files = assetManager.list("");
             for (String filestr: files){
@@ -38,7 +34,7 @@ public class Dictionary {
         words = new Vector<String> ();
         InputStream file = null;
         try {
-            file = InstrumentationRegistry.getTargetContext().getResources().getAssets().open("words.txt");
+            file = InstrumentationRegistry.getInstrumentation().getTargetContext().getResources().getAssets().open("words.txt");
         } catch (IOException e) {
             e.printStackTrace();
             file=null;

@@ -15,14 +15,11 @@
 package com.google.android.apps.common.testing.accessibility.framework;
 
 import android.os.Build;
-import android.support.v4.view.accessibility.AccessibilityNodeInfoCompat;
-import android.text.SpannableStringBuilder;
+import androidx.core.view.accessibility.AccessibilityNodeInfoCompat;
+
 import android.text.TextUtils;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.accessibility.AccessibilityNodeInfo;
-import android.widget.CompoundButton;
-import android.widget.TextView;
 
 
 import com.google.eyesfree.utils.AccessibilityNodeInfoUtils;

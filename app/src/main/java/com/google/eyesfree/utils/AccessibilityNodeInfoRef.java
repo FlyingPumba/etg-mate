@@ -16,7 +16,7 @@
 
 package com.google.eyesfree.utils;
 
-import android.support.v4.view.accessibility.AccessibilityNodeInfoCompat;
+import androidx.core.view.accessibility.AccessibilityNodeInfoCompat;
 
 /**
  * A class that simplifies traversal of node trees.

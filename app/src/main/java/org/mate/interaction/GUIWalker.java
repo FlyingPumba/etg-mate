@@ -1,7 +1,7 @@
 package org.mate.interaction;
 
 import android.app.Instrumentation;
-import android.support.test.uiautomator.UiDevice;
+import androidx.test.uiautomator.UiDevice;
 
 import org.mate.MATE;
 import org.mate.exceptions.AUTCrashException;
@@ -13,7 +13,7 @@ import org.mate.state.ScreenStateFactory;
 
 import java.util.Vector;
 
-import static android.support.test.InstrumentationRegistry.getInstrumentation;
+import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
 
 /**
  * Created by marceloeler on 21/06/17.

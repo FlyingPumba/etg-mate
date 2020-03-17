@@ -3,15 +3,16 @@ package org.mate.interaction;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Point;
-import android.support.test.InstrumentationRegistry;
-import android.support.test.uiautomator.By;
-import android.support.test.uiautomator.UiDevice;
-import android.support.test.uiautomator.UiObject;
-import android.support.test.uiautomator.UiObject2;
-import android.support.test.uiautomator.UiObjectNotFoundException;
-import android.support.test.uiautomator.UiSelector;
-import android.support.v4.util.Pair;
+import androidx.test.platform.app.InstrumentationRegistry;
+import androidx.test.uiautomator.By;
+import androidx.test.uiautomator.UiDevice;
+import androidx.test.uiautomator.UiObject;
+import androidx.test.uiautomator.UiObject2;
+import androidx.test.uiautomator.UiObjectNotFoundException;
+import androidx.test.uiautomator.UiSelector;
+import androidx.core.util.Pair;
 import android.text.InputType;
+import android.util.Log;
 
 import org.mate.MATE;
 import org.mate.datagen.DataGenerator;
@@ -34,8 +35,8 @@ public class DeviceMgr implements IApp {
     private UiDevice device;
     private String packageName;
 
-    public DeviceMgr(UiDevice device, String packageName){
-        this.device = device;
+    public DeviceMgr(String packageName){
+        device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
         this.packageName = packageName;
     }
 
@@ -73,12 +74,20 @@ public class DeviceMgr implements IApp {
                 break;
 
             case BACK:
-                device.pressBack();
+                int i = 0;
+                boolean worked = false;
+                while (!worked && i < 10){
+                    i++;
+                    worked = device.pressBack();
+                    Log.e("Back pressed " + i, String.valueOf(worked));
+                }
+                if (!worked) throw new RuntimeException("Can't perform back!");
                 break;
 
-            case MENU:
-                device.pressMenu();
-                break;
+            //Se comenta menu porque se  realizará esta acción mediante un click en los items de menu
+//            case MENU:
+//                device.pressMenu();
+//                break;
 
             case ENTER:
                 device.pressEnter();
@@ -349,7 +358,7 @@ public class DeviceMgr implements IApp {
     public void restartApp() {
             MATE.log("Restarting app");
             // Launch the app
-            Context context = InstrumentationRegistry.getContext();
+            Context context = InstrumentationRegistry.getInstrumentation().getContext();
             final Intent intent = context.getPackageManager()
                     .getLaunchIntentForPackage(packageName);
             // Clear out any previous instances

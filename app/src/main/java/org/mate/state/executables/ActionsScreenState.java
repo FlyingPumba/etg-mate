@@ -247,7 +247,9 @@ public class ActionsScreenState extends AbstractScreenState {
         if (activityName.contains("GoogleOAuthActivity"))
             executables = new Vector<Action>();
         executables.add(new Action(ActionType.BACK));
-        executables.add(new Action(ActionType.MENU));
+        //Se comenta acción menu porque se puede reproducir mediate click y trae problemas en mate luego de un back (el back deja de responder)
+//        executables.add(new Action(ActionType.MENU));
+
 
         actions = executables;
         return executables;

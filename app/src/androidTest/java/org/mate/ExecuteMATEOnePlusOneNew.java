@@ -1,14 +1,10 @@
 package org.mate;
 
 
-import android.support.test.runner.AndroidJUnit4;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mate.exploration.evolutionary.OnePlusOne;
-import org.mate.model.TestCase;
-
-import java.util.Vector;
 
 @RunWith(AndroidJUnit4.class)
 public class ExecuteMATEOnePlusOneNew {

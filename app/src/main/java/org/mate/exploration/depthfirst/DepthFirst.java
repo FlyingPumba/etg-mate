@@ -1,10 +1,5 @@
 package org.mate.exploration.depthfirst;
 
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.support.test.InstrumentationRegistry;
-import android.view.View;
-
 import org.mate.MATE;
 import org.mate.exceptions.AUTCrashException;
 import org.mate.exceptions.InvalidScreenStateException;
