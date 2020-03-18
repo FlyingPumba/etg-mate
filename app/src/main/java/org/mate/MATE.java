@@ -104,7 +104,7 @@ public class MATE {
         //get timeout from server using EnvironmentManager
         long timeout = EnvironmentManager.getTimeout();
         if (timeout == 0)
-            timeout = 30; //set default - 30 minutes
+            timeout = 60; //set default - 60 minutes
         MATE.TIME_OUT = timeout * 60 * 1000;
         MATE.log("TIMEOUT : " + timeout);
 
@@ -123,15 +123,15 @@ public class MATE {
         device = UiDevice.getInstance(instrumentation);
 
         //get the name of the package of the app currently running
-        this.packageName = device.getCurrentPackageName();
+        packageName = device.getCurrentPackageName();
 
         // fetch emulator before calling handleAuth method, otherwise it will throw an exception on
         // MATE server when sending a null emulator
-        EnvironmentManager.detectEmulator(this.packageName);
+        EnvironmentManager.detectEmulator(packageName);
 
         //checks whether user needs to authorize access to something on the device/emulator
         handleAuth(device);
-        MATE.log("Package name: " + this.packageName);
+        MATE.log("Package name: " + packageName);
 
         //list the activities of the app under test
         listActivities(instrumentation.getContext());
@@ -140,7 +140,7 @@ public class MATE {
 
     public void testApp(String explorationStrategy) {
 
-        String emulator = EnvironmentManager.detectEmulator(this.packageName);
+        String emulator = EnvironmentManager.detectEmulator(packageName);
         MATE.log("EMULATOR: " + emulator);
 
         runningTime = new Date().getTime();
@@ -290,6 +290,21 @@ public class MATE {
                         EnvironmentManager.storeCoverageData(randomExploration, null);
                         MATE.log_acc("Total coverage: " + EnvironmentManager.getCombinedCoverage());
                     }
+
+                    IChromosome<TestCase> bestIndividual = randomExploration.getBestIndividual();
+                    TestCase testCase = bestIndividual.getValue();
+
+                    IFitnessFunction<TestCase> fitnessFunction = randomExploration.getFitnessFunctions();
+                    testCase.setCoverage(fitnessFunction.getFitness(bestIndividual));
+                    testCase.setChromosomeHash(bestIndividual.toString());
+
+                    List<TestCase> testCases = new ArrayList<>();
+                    testCases.add(testCase);
+
+                    // write test cases to JSON and save in Server
+                    ObjectMapper mapper = new ObjectMapper();
+                    String jsonString = mapper.writeValueAsString(testCases);
+                    EnvironmentManager.storeJsonTestCases(jsonString);
                 } else if (explorationStrategy.equals(MOSA.ALGORITHM_NAME)) {
                     uiAbstractionLayer = new UIAbstractionLayer(deviceMgr, packageName);
 
@@ -389,9 +404,10 @@ public class MATE {
                             .withChromosomeFactory(AndroidRandomChromosomeFactory.CHROMOSOME_FACTORY_ID)
                             .withMutationFunction(CutPointMutationFunction.MUTATION_FUNCTION_ID)
                             .withTerminationCondition(NeverTerminationCondition.TERMINATION_CONDITION_ID)
+//                            .withTerminationCondition(IterTerminationCondition.TERMINATION_CONDITION_ID)
                             .withFitnessFunction(StatementCoverageFitnessFunction.FITNESS_FUNCTION_ID)
-                            .withMaxNumEvents(50);
-
+//                            .withMaxNumEvents(50);
+                            .withMaxNumEvents(10);
 
                     final IGeneticAlgorithm<TestCase> randomWalk = builder.build();
                     TimeoutRun.timeoutRun(new Callable<Void>() {

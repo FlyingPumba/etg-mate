@@ -223,6 +223,37 @@ public class EnvironmentManager {
         return currentActivity;
     }
 
+    public static String getCurrentPackageName(){
+        String packageName = null;
+
+        String cmd = "getPackageName:"+emulator;
+        try {
+            Socket server = new Socket(SERVER_IP, port);
+            PrintStream output = new PrintStream(server.getOutputStream());
+            output.println(cmd);
+
+
+            String serverResponse="";
+            BufferedReader in = new BufferedReader(new InputStreamReader(server.getInputStream()));
+            while(true) {
+                if ((serverResponse = in.readLine()) != null) {
+                    packageName = serverResponse;
+                    break;
+                }
+            }
+
+            server.close();
+            output.close();
+            in.close();
+
+        } catch (IOException e) {
+            MATE.log("socket error sending");
+            e.printStackTrace();
+        }
+
+        return packageName;
+    }
+
     public static List<String> getActivityNames() {
         List<String> activities = new ArrayList<>();
 
