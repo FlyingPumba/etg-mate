@@ -46,11 +46,11 @@ public class Properties {
      * Genetic Algorithm properties
      */
 
-    public static int POPULATION_SIZE = 20;
+    public static int POPULATION_SIZE = 50;
 
-    public static int NUMBER_TESTCASES = 2;
+    public static int NUMBER_TESTCASES = 5;
 
-    public static int MAX_NUMBER_EVENTS = 5;
+    public static int MAX_NUMBER_EVENTS = 50;
 
     public static double P_CROSSOVER = 0.7;
 
