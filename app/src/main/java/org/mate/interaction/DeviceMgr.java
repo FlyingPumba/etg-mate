@@ -76,12 +76,12 @@ public class DeviceMgr implements IApp {
             case BACK:
                 int i = 0;
                 boolean worked = false;
-                while (!worked && i < 10){
-                    i++;
+//                while (!worked && i < 10){
+//                    i++;
                     worked = device.pressBack();
                     Log.e("Back pressed " + i, String.valueOf(worked));
-                }
-                if (!worked) throw new RuntimeException("Can't perform back!");
+//                }
+//                if (!worked) throw new RuntimeException("Can't perform back!");
                 break;
 
             //Se comenta menu porque se  realizará esta acción mediante un click en los items de menu
