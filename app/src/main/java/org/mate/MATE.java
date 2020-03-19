@@ -291,15 +291,19 @@ public class MATE {
                         MATE.log_acc("Total coverage: " + EnvironmentManager.getCombinedCoverage());
                     }
 
-                    IChromosome<TestCase> bestIndividual = randomExploration.getBestIndividual();
-                    TestCase testCase = bestIndividual.getValue();
 
+                    List<IChromosome<TestCase>> individuals = randomExploration.getRepresentativeIndividual();
                     IFitnessFunction<TestCase> fitnessFunction = randomExploration.getFitnessFunctions();
-                    testCase.setCoverage(fitnessFunction.getFitness(bestIndividual));
-                    testCase.setChromosomeHash(bestIndividual.toString());
 
                     List<TestCase> testCases = new ArrayList<>();
-                    testCases.add(testCase);
+                    for (IChromosome<TestCase> individual : individuals) {
+                        TestCase testCase = individual.getValue();
+
+                        testCase.setCoverage(fitnessFunction.getFitness(individual));
+                        testCase.setChromosomeHash(individual.toString());
+
+                        testCases.add(testCase);
+                    }
 
                     // write test cases to JSON and save in Server
                     ObjectMapper mapper = new ObjectMapper();

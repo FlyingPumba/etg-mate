@@ -5,9 +5,9 @@ import org.mate.Properties;
 import org.mate.exploration.genetic.chromosome.IChromosome;
 import org.mate.exploration.genetic.chromosome_factory.AndroidRandomChromosomeFactory;
 import org.mate.exploration.genetic.fitness.IFitnessFunction;
-import org.mate.exploration.genetic.fitness.LineCoveredPercentageFitnessFunction;
 import org.mate.exploration.genetic.fitness.StatementCoverageFitnessFunction;
 import org.mate.model.TestCase;
+import org.mate.ui.EnvironmentManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,8 +17,8 @@ public class RandomExploration {
     private final boolean alwaysReset;
     StatementCoverageFitnessFunction fitnessFunction;
 
-    IChromosome bestIndividual = null;
-    double bestFitness = 0;
+    List<IChromosome<TestCase>> representativeIndividuals = null;
+    double currentCombinedCoverage = 0;
 
     public RandomExploration(int maxNumEvents) {
         this(Properties.STORE_COVERAGE, true, maxNumEvents);
@@ -28,26 +28,25 @@ public class RandomExploration {
         this.alwaysReset = alwaysReset;
         randomChromosomeFactory = new AndroidRandomChromosomeFactory(storeCoverage, alwaysReset, maxNumEvents);
         fitnessFunction = new StatementCoverageFitnessFunction();
+        representativeIndividuals = new ArrayList<>();
     }
 
     public void run() {
         for (int i = 0; true; i++) {
-            if (alwaysReset) {
-                MATE.uiAbstractionLayer.resetApp();
-            }
             MATE.log_acc("Exploration #" + (i + 1));
             IChromosome<TestCase> chromosome = randomChromosomeFactory.createChromosome();
+            // double fitness = fitnessFunction.getFitness(chromosome);
 
-            double fitness = fitnessFunction.getFitness(chromosome);
-            if (fitness > bestFitness) {
-                bestIndividual = chromosome;
-                bestFitness = fitness;
+            double combinedCoverage = EnvironmentManager.getCombinedCoverage();
+            if (combinedCoverage > currentCombinedCoverage) {
+                representativeIndividuals.add(chromosome);
+                currentCombinedCoverage = combinedCoverage;
             }
         }
     }
 
-    public IChromosome<TestCase> getBestIndividual() {
-        return bestIndividual;
+    public List<IChromosome<TestCase>> getRepresentativeIndividual() {
+        return representativeIndividuals;
     }
 
     public IFitnessFunction<TestCase> getFitnessFunctions() {
