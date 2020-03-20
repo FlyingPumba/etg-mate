@@ -122,7 +122,7 @@ public class AppScreen {
             res="";
 
         //if widget is an android view, otuside application scope
-        if (res.startsWith("android:id/")) return null;
+        if (res.startsWith("android") || res.startsWith("com.google.android")) return null;
 
         widget.setResourceID(res);
 
