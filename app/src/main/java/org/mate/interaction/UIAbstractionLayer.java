@@ -24,6 +24,8 @@ import static org.mate.interaction.UIAbstractionLayer.ActionResult.SUCCESS_NEW_S
 import static org.mate.interaction.UIAbstractionLayer.ActionResult.SUCCESS_OUTBOUND;
 
 public class UIAbstractionLayer {
+    private static final int DELAY_AFTER_ACTION_MS = 300;
+
     private String packageName;
     private DeviceMgr deviceMgr;
     private Map<Action, Edge> edges;
@@ -54,6 +56,9 @@ public class UIAbstractionLayer {
         try {
             //execute this selected action
             deviceMgr.executeAction(action);
+
+            // wait a bit for UI to change before parsing UI again
+            sleep(DELAY_AFTER_ACTION_MS);
 
             //create an object that represents the screen
             //using type: ActionScreenState
