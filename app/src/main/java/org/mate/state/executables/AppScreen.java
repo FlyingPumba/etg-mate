@@ -71,16 +71,10 @@ public class AppScreen {
             catch(StaleObjectException e){
                 MATE.log("StaleObjectException");
             }
-            if (widget!=null)
+            if (widget!=null) {
                 widgets.add(widget);
-            else{
-                Rect rec = new Rect();
-                obj.getBoundsInScreen(rec);
-                //MATE.log("WIDGET NULL: "+ rec.toShortString());
-
-
-
             }
+
             for (int i=0; i<obj.getChildCount(); i++)
                 readNodes(obj.getChild(i),widget);
         }
@@ -158,6 +152,11 @@ public class AppScreen {
         }
         if (y2>device.getDisplayHeight()||y1>device.getDisplayHeight()) {
             this.hastoScrollDown = true;
+            return null;
+        }
+
+        if (x1 == x2 || y1 == y2) {
+            // this widget appears to be visible but actually it's not: it has zero width or height.
             return null;
         }
 
