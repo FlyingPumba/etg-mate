@@ -2,14 +2,19 @@ package org.mate.state.executables;
 
 import android.app.Instrumentation;
 import android.app.UiAutomation;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Rect;
+import android.os.Build;
 import android.preference.PreferenceManager;
 
 import androidx.test.uiautomator.By;
 import androidx.test.uiautomator.StaleObjectException;
 import androidx.test.uiautomator.UiDevice;
 import androidx.test.uiautomator.UiObject2;
+
+import android.util.DisplayMetrics;
+import android.view.WindowManager;
 import android.view.accessibility.AccessibilityNodeInfo;
 
 import org.mate.MATE;
@@ -38,6 +43,9 @@ public class AppScreen {
     private boolean  hasToScrollRight;
     private AccessibilityNodeInfo rootNodeInfo;
 
+    private final int usableHeight;
+    private final int usableWidth;
+
     public AppScreen(){
         this.widgets = new Vector<Widget>();
         this.activityName = EnvironmentManager.getCurrentActivityName();
@@ -58,6 +66,10 @@ public class AppScreen {
                 MATE.log("ACCSERVICE TRUE");
             //Try to reconnect
         }
+
+        usableHeight = getUsableHeight();
+        usableWidth = getUsableWidth();
+
         rootNodeInfo = ninfo;
         readNodes(ninfo,null);
     }
@@ -138,19 +150,20 @@ public class AppScreen {
         int x2=widget.getX2();
         int y1=widget.getY1();
         int y2=widget.getY2();
-        if (x1<0 || x2<0){
+
+        if (x1 < 0 || x2 < 0){
             this.hasToScrollLeft=true;
             return null;
         }
-        if (x2>device.getDisplayWidth() || x1>device.getDisplayWidth()) {
+        if (x2 > usableWidth || x1 > usableWidth) {
             this.hasToScrollRight = true;
             return null;
         }
-        if (y1<0 || y2<0) {
+        if (y1 < 0 || y2 < 0) {
             this.hasToScrollUp = true;
             return null;
         }
-        if (y2>device.getDisplayHeight()||y1>device.getDisplayHeight()) {
+        if (y2 > usableHeight||y1 > usableHeight) {
             this.hastoScrollDown = true;
             return null;
         }
@@ -276,5 +289,37 @@ public class AppScreen {
 
     public AccessibilityNodeInfo getRootNodeInfo(){
         return this.rootNodeInfo;
+    }
+
+    private int getUsableHeight() {
+        final WindowManager windowManager =
+                (WindowManager) getInstrumentation().getContext()
+                        .getSystemService(Context.WINDOW_SERVICE);
+
+        // getRealMetrics is only available with API 17 and +
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            DisplayMetrics metrics = new DisplayMetrics();
+            windowManager.getDefaultDisplay().getMetrics(metrics);
+            int usableHeight = metrics.heightPixels;
+            return usableHeight;
+        }
+
+        return device.getDisplayHeight();
+    }
+
+    private int getUsableWidth() {
+        final WindowManager windowManager =
+                (WindowManager) getInstrumentation().getContext()
+                        .getSystemService(Context.WINDOW_SERVICE);
+
+        // getRealMetrics is only available with API 17 and +
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            DisplayMetrics metrics = new DisplayMetrics();
+            windowManager.getDefaultDisplay().getMetrics(metrics);
+            int usableWidth = metrics.widthPixels;
+            return usableWidth;
+        }
+
+        return device.getDisplayWidth();
     }
 }
