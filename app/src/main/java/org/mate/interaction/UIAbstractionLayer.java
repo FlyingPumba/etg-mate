@@ -24,7 +24,7 @@ import static org.mate.interaction.UIAbstractionLayer.ActionResult.SUCCESS_NEW_S
 import static org.mate.interaction.UIAbstractionLayer.ActionResult.SUCCESS_OUTBOUND;
 
 public class UIAbstractionLayer {
-    private static final int DELAY_AFTER_ACTION_MS = 300;
+    private static final int DELAY_AFTER_ACTION_MS = 500;
 
     private String packageName;
     private DeviceMgr deviceMgr;
