@@ -63,6 +63,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.Vector;
 import java.util.concurrent.Callable;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
 
@@ -87,6 +88,8 @@ public class MATE {
     private GraphGUIModel completeModel;
 
     public static String logMessage;
+
+    public static final AtomicBoolean timeoutReached = new AtomicBoolean(false);
 
 
     //public static Vector<String> checkedWidgets = new Vector<String>();
@@ -278,6 +281,8 @@ public class MATE {
 
                     final RandomExploration randomExploration = new RandomExploration(50);
 
+                    timeoutReached.set(false);
+
                     TimeoutRun.timeoutRun(new Callable<Void>() {
                         @Override
                         public Void call() throws Exception {
@@ -286,11 +291,12 @@ public class MATE {
                         }
                     }, MATE.TIME_OUT);
 
+                    timeoutReached.set(true);
+
                     if (Properties.STORE_COVERAGE) {
                         EnvironmentManager.storeCoverageData(randomExploration, null);
                         MATE.log_acc("Total coverage: " + EnvironmentManager.getCombinedCoverage());
                     }
-
 
                     randomExploration.takeScreenshotsToRepresentativeIndividuals();
                     List<IChromosome<TestCase>> individuals = randomExploration.getRepresentativeIndividual();

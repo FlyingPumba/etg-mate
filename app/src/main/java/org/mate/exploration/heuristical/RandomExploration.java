@@ -36,10 +36,18 @@ public class RandomExploration {
 
     public void run() {
         for (int i = 0; true; i++) {
+            if (MATE.timeoutReached.get()) {
+                return;
+            }
+
             MATE.log_acc("Exploration #" + (i + 1));
             IChromosome<TestCase> chromosome = randomChromosomeFactory.createChromosome();
-            // double fitness = fitnessFunction.getFitness(chromosome);
+            if (chromosome == null) {
+                // timeout reached during chromosome creation
+                return;
+            }
 
+            // double fitness = fitnessFunction.getFitness(chromosome);
             double combinedCoverage = EnvironmentManager.getCombinedCoverage();
             if (combinedCoverage > currentCombinedCoverage) {
                 representativeIndividuals.add(chromosome);
