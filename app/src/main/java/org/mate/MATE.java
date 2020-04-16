@@ -292,6 +292,7 @@ public class MATE {
                     }
 
 
+                    randomExploration.takeScreenshotsToRepresentativeIndividuals();
                     List<IChromosome<TestCase>> individuals = randomExploration.getRepresentativeIndividual();
                     IFitnessFunction<TestCase> fitnessFunction = randomExploration.getFitnessFunctions();
 

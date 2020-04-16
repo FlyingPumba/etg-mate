@@ -457,6 +457,11 @@ public class EnvironmentManager {
         sendCommandToServer(cmd);
     }
 
+    public static void namedScreenShot(String name){
+        String cmd = "screenshot:"+emulator+":"+name+".png";
+        sendCommandToServer(cmd);
+    }
+
     public static void clearAppData() {
         String cmd = "clearApp:" + emulator;
 

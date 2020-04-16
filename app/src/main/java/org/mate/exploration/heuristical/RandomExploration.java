@@ -2,15 +2,18 @@ package org.mate.exploration.heuristical;
 
 import org.mate.MATE;
 import org.mate.Properties;
+import org.mate.exploration.genetic.chromosome.Chromosome;
 import org.mate.exploration.genetic.chromosome.IChromosome;
 import org.mate.exploration.genetic.chromosome_factory.AndroidRandomChromosomeFactory;
 import org.mate.exploration.genetic.fitness.IFitnessFunction;
 import org.mate.exploration.genetic.fitness.StatementCoverageFitnessFunction;
 import org.mate.model.TestCase;
+import org.mate.ui.Action;
 import org.mate.ui.EnvironmentManager;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Vector;
 
 public class RandomExploration {
     private final AndroidRandomChromosomeFactory randomChromosomeFactory;
@@ -41,6 +44,25 @@ public class RandomExploration {
             if (combinedCoverage > currentCombinedCoverage) {
                 representativeIndividuals.add(chromosome);
                 currentCombinedCoverage = combinedCoverage;
+            }
+        }
+    }
+
+    public void takeScreenshotsToRepresentativeIndividuals() {
+        for (int i = 0; i < representativeIndividuals.size(); i++) {
+            IChromosome<TestCase> individual = representativeIndividuals.get(i);
+
+            MATE.uiAbstractionLayer.resetApp();
+
+            TestCase testCase = individual.getValue();
+            Vector<Action> actions = testCase.getEventSequence();
+            for (int j = 0; j < actions.size(); j++) {
+                String hash = individual.toString().split("@")[1];
+                String name = String.format("MATE_%d_%s_%d", i, hash, j);
+                EnvironmentManager.namedScreenShot(name);
+
+                Action action = actions.get(j);
+                MATE.uiAbstractionLayer.executeAction(action);
             }
         }
     }
