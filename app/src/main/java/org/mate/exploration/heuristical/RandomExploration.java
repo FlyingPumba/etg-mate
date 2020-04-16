@@ -51,19 +51,22 @@ public class RandomExploration {
     public void takeScreenshotsToRepresentativeIndividuals() {
         for (int i = 0; i < representativeIndividuals.size(); i++) {
             IChromosome<TestCase> individual = representativeIndividuals.get(i);
+            String hash = individual.toString().split("@")[1];
 
             MATE.uiAbstractionLayer.resetApp();
 
             TestCase testCase = individual.getValue();
             Vector<Action> actions = testCase.getEventSequence();
             for (int j = 0; j < actions.size(); j++) {
-                String hash = individual.toString().split("@")[1];
                 String name = String.format("MATE_%d_%s_%d", i, hash, j);
                 EnvironmentManager.namedScreenShot(name);
 
                 Action action = actions.get(j);
                 MATE.uiAbstractionLayer.executeAction(action);
             }
+
+            String name = String.format("MATE_%d_%s_%d", i, hash, actions.size());
+            EnvironmentManager.namedScreenShot(name);
         }
     }
 
