@@ -408,10 +408,8 @@ public class MATE {
                             .withChromosomeFactory(AndroidRandomChromosomeFactory.CHROMOSOME_FACTORY_ID)
                             .withMutationFunction(CutPointMutationFunction.MUTATION_FUNCTION_ID)
                             .withTerminationCondition(NeverTerminationCondition.TERMINATION_CONDITION_ID)
-//                            .withTerminationCondition(IterTerminationCondition.TERMINATION_CONDITION_ID)
                             .withFitnessFunction(StatementCoverageFitnessFunction.FITNESS_FUNCTION_ID)
-//                            .withMaxNumEvents(50);
-                            .withMaxNumEvents(10);
+                            .withMaxNumEvents(50);
 
                     final IGeneticAlgorithm<TestCase> randomWalk = builder.build();
                     TimeoutRun.timeoutRun(new Callable<Void>() {
