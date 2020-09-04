@@ -3,6 +3,7 @@ package org.mate.ui;
 import androidx.annotation.Nullable;
 import androidx.core.util.Pair;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.Vector;
 
@@ -25,6 +26,7 @@ public class Action {
 
 
     private Vector<Action> adjActions;
+    private List<String> networkingInfo;
 
     public Vector<Action> getAdjActions() {
         return adjActions;
@@ -130,5 +132,13 @@ public class Action {
     public int hashCode() {
 
         return Objects.hash(widget.getIdByActivity(), actionType);
+    }
+
+    public void setNetworkingInfo(List<String> networkingInfo) {
+        this.networkingInfo = networkingInfo;
+    }
+
+    public List<String> getNetworkingInfo() {
+        return networkingInfo;
     }
 }

@@ -483,6 +483,33 @@ public class EnvironmentManager {
         }
     }
 
+    public static List<String> dumpOkHttpLogcat() {
+        List<String> lines = new ArrayList<>();
+
+        String cmd = "dumpOkHttpLogcat:"+emulator;
+        try {
+            Socket server = new Socket(SERVER_IP, port);
+            PrintStream output = new PrintStream(server.getOutputStream());
+            output.println(cmd);
+
+
+            BufferedReader in = new BufferedReader(new InputStreamReader(server.getInputStream()));
+            for (String line = in.readLine(); line != null; line = in.readLine()) {
+                lines.add(line);
+            }
+
+            server.close();
+            output.close();
+            in.close();
+
+        } catch (IOException e) {
+            MATE.log("socket error sending");
+            e.printStackTrace();
+        }
+
+        return lines;
+    }
+
     public static double getContrastRatio(String packageName, String stateId, Widget widget, int maxw, int maxh){
         double contrastRatio = 21;
         try {

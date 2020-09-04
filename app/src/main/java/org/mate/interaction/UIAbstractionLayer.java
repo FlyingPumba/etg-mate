@@ -7,8 +7,10 @@ import org.mate.exceptions.AUTCrashException;
 import org.mate.state.IScreenState;
 import org.mate.state.ScreenStateFactory;
 import org.mate.ui.Action;
+import org.mate.ui.EnvironmentManager;
 import org.mate.ui.Widget;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -54,11 +56,44 @@ public class UIAbstractionLayer {
     private ActionResult executeActionUnsafe(Action action) {
         IScreenState state;
         try {
+            // check networking info previous to running the action
+            List<String> networkingInfoPreviousToAction = EnvironmentManager.dumpOkHttpLogcat();
+
             //execute this selected action
             deviceMgr.executeAction(action);
 
             // wait a bit for UI to change before parsing UI again
             sleep(DELAY_AFTER_ACTION_MS);
+            sleep(DELAY_AFTER_ACTION_MS);
+            sleep(DELAY_AFTER_ACTION_MS);
+            sleep(DELAY_AFTER_ACTION_MS);
+
+            // dump any networking info after action
+            List<String> networkingInfoPostAction = EnvironmentManager.dumpOkHttpLogcat();
+
+            List<String> networkingInfo;
+            if (networkingInfoPreviousToAction.isEmpty()) {
+                networkingInfo = new ArrayList<>(networkingInfoPostAction);
+            } else {
+                String lastLine = networkingInfoPreviousToAction.get(networkingInfoPreviousToAction.size() - 1);
+                networkingInfo = new ArrayList<>();
+                for (int i = networkingInfoPostAction.size() -1; i >= 0; i--) {
+                    String line = networkingInfoPostAction.get(i);
+                    if (lastLine.equals(line)) {
+                        // we reached a common line, stop
+                        break;
+                    }
+                    String[] aux = line.split("OkHttp  : ");
+                    if (aux.length < 2) {
+                        continue;
+                    }
+
+                    String log = aux[1];
+                    networkingInfo.add(0, log);
+                }
+            }
+
+            action.setNetworkingInfo(networkingInfo);
 
             //create an object that represents the screen
             //using type: ActionScreenState
@@ -194,6 +229,10 @@ public class UIAbstractionLayer {
         sleep(5000);
         deviceMgr.restartApp();
         sleep(2000);
+
+        // extra sleep for CuidAR Splash Screen
+        sleep(3000);
+
         currentScreenState = ScreenStateFactory.getScreenState("ActionsScreenState");
         String currentPackageName = currentScreenState.getPackageName();
         if (currentPackageName != null && currentPackageName.contains("com.google.android.packageinstaller")) {

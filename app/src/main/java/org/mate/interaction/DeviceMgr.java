@@ -14,6 +14,7 @@ import androidx.core.util.Pair;
 import android.text.InputType;
 import android.util.Log;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.mate.MATE;
 import org.mate.datagen.DataGenerator;
 import org.mate.exceptions.AUTCrashException;
@@ -23,8 +24,12 @@ import org.mate.ui.ActionType;
 import org.mate.ui.EnvironmentManager;
 import org.mate.ui.Swipe;
 import org.mate.ui.Widget;
+import org.mate.utils.Randomness;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 
 /**
  * Created by marceloeler on 08/03/17.
@@ -330,7 +335,14 @@ public class DeviceMgr implements IApp {
         if (inputType!=null){
 
             if (inputType.contains("phone") || inputType.contains("number") || inputType.contains("Phone") || inputType.contains("Number")) {
-                textData = dataGen.getRandomValidNumber(maxLengthInt);
+                Random random = new Random();
+                // Use words from DB in 95% of the times.
+                if (random.nextFloat() < 0.95) {
+                    String[] dbStrings = {"11111111", "111", "22222222", "222"};
+                    textData = Randomness.randomElement(Arrays.asList(dbStrings));
+                } else {
+                    textData = dataGen.getRandomValidNumber(maxLengthInt);
+                }
             }
             else
             if (inputType.contains("Email") || inputType.contains("email")) {
@@ -341,7 +353,14 @@ public class DeviceMgr implements IApp {
                 textData = dataGen.getRandomUri(maxLengthInt);
             }
             else {
-                textData = dataGen.getRandomValidString(maxLengthInt);
+                Random random = new Random();
+                // Use words from DB in 95% of the times.
+                if (random.nextFloat() < 0.95) {
+                    String[] dbStrings = {"11111111", "111", "22222222", "222"};
+                    textData = Randomness.randomElement(Arrays.asList(dbStrings));
+                } else {
+                    textData = dataGen.getRandomValidString(maxLengthInt);
+                }
             }
         }
         else

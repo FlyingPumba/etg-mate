@@ -5,11 +5,13 @@ import org.mate.Properties;
 import org.mate.exploration.genetic.chromosome.Chromosome;
 import org.mate.exploration.genetic.chromosome.IChromosome;
 import org.mate.exploration.genetic.fitness.LineCoveredPercentageFitnessFunction;
+import org.mate.interaction.UIAbstractionLayer;
 import org.mate.model.TestCase;
 import org.mate.ui.Action;
-import org.mate.interaction.UIAbstractionLayer;
 import org.mate.ui.EnvironmentManager;
 import org.mate.utils.Randomness;
+
+import java.util.List;
 
 
 public class AndroidRandomChromosomeFactory implements IChromosomeFactory<TestCase> {
@@ -69,6 +71,7 @@ public class AndroidRandomChromosomeFactory implements IChromosomeFactory<TestCa
     }
 
     protected Action selectAction() {
-        return Randomness.randomElement(uiAbstractionLayer.getExecutableActions());
+        List<Action> executableActions = uiAbstractionLayer.getExecutableActions();
+        return Randomness.randomElement(executableActions);
     }
 }
