@@ -106,7 +106,7 @@ public class AndroidRandomChromosomeFactory implements IChromosomeFactory<TestCa
         public abstract Action getNextAction();
 
         public boolean hasNextAction() {
-            return currentStep + 1 < totalSteps;
+            return currentStep < totalSteps;
         }
 
         protected Action getDNIAction(List<Action> executableActions, String dni) {
