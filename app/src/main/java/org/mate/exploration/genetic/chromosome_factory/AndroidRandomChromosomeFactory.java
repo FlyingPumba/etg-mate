@@ -24,14 +24,6 @@ public class AndroidRandomChromosomeFactory implements IChromosomeFactory<TestCa
     private boolean storeCoverage;
     private boolean resetApp;
 
-    private LoginStrategy[] loginStrategies = {
-        new SuccessfulLogin(true),
-        new SuccessfulLogin(false),
-        new MissingDNILogin(),
-        new MissingNroTramiteLogin(),
-        new MissingSexLogin(),
-    };
-
     public AndroidRandomChromosomeFactory(int maxNumEvents) {
         this(Properties.STORE_COVERAGE, true, maxNumEvents);
     }
@@ -52,6 +44,13 @@ public class AndroidRandomChromosomeFactory implements IChromosomeFactory<TestCa
         TestCase testCase = TestCase.newInitializedTestCase();
         Chromosome<TestCase> chromosome = new Chromosome<>(testCase);
 
+        LoginStrategy[] loginStrategies = {
+                new SuccessfulLogin(true),
+                new SuccessfulLogin(false),
+                new MissingDNILogin(),
+                new MissingNroTramiteLogin(),
+                new MissingSexLogin(),
+        };
         LoginStrategy loginStrategy = Randomness.randomElement(Arrays.asList(loginStrategies));
 
         try {
