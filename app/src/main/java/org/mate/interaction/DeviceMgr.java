@@ -227,7 +227,11 @@ public class DeviceMgr implements IApp {
     public void handleEdit(Action action){
 
         Widget widget = action.getWidget();
-        String textData = generateTextData(action);
+        String textData = action.getExtraInfo();
+
+        if (textData.isEmpty()) {
+            textData = generateTextData(action);
+        }
 
         if (widget.getResourceID().equals("")){
             if (!widget.getText().equals("")) {

@@ -64,7 +64,7 @@ public class HeuristicalChromosomeFactory extends AndroidRandomChromosomeFactory
     }
 
     @Override
-    protected Action selectAction() {
+    protected Action selectRandomAction() {
         List<Action> executableActions = uiAbstractionLayer.getExecutableActions();
 
         //compute unvisited Actions of previous action (if there is a previous action)
