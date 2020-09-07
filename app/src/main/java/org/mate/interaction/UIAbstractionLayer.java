@@ -27,6 +27,7 @@ import static org.mate.interaction.UIAbstractionLayer.ActionResult.SUCCESS_OUTBO
 
 public class UIAbstractionLayer {
     private static final int DELAY_AFTER_ACTION_MS = 500;
+    private static final int DELAY_AFTER_CUIDAR_ACTION_MS = 3000;
 
     private String packageName;
     private DeviceMgr deviceMgr;
@@ -63,10 +64,7 @@ public class UIAbstractionLayer {
             deviceMgr.executeAction(action);
 
             // wait a bit for UI to change before parsing UI again
-            sleep(DELAY_AFTER_ACTION_MS);
-            sleep(DELAY_AFTER_ACTION_MS);
-            sleep(DELAY_AFTER_ACTION_MS);
-            sleep(DELAY_AFTER_ACTION_MS);
+            sleep(DELAY_AFTER_CUIDAR_ACTION_MS);
 
             // dump any networking info after action
             List<String> networkingInfoPostAction = EnvironmentManager.dumpOkHttpLogcat();
