@@ -47,6 +47,8 @@ public class AndroidRandomChromosomeFactory implements IChromosomeFactory<TestCa
         LoginStrategy[] loginStrategies = {
                 new SuccessfulLogin(true),
                 new SuccessfulLogin(false),
+                new SuccessfulLogin(true, true),
+                new SuccessfulLogin(false, true),
                 new MissingDNILogin(),
                 new MissingNroTramiteLogin(),
                 new MissingSexLogin(),
@@ -154,9 +156,14 @@ public class AndroidRandomChromosomeFactory implements IChromosomeFactory<TestCa
             }
             return null;
         }
+
+        protected Action getRestartAppAction() {
+            return new Action(ActionType.RESTART);
+        }
     }
 
     private class SuccessfulLogin extends LoginStrategy {
+        private boolean restartAppAfterLogin = false;
         private String dni;
         private String nroTramite;
         private String sexo;
@@ -166,7 +173,12 @@ public class AndroidRandomChromosomeFactory implements IChromosomeFactory<TestCa
         }
 
         public SuccessfulLogin(boolean infected) {
-            super(5);
+            this(infected, false);
+        }
+
+        public SuccessfulLogin(boolean infected, boolean restartAppAfterLogin) {
+            super(restartAppAfterLogin ? 6: 5);
+            this.restartAppAfterLogin = restartAppAfterLogin;
             if (infected) {
                 dni = "22222222";
                 nroTramite = "222";
@@ -192,6 +204,8 @@ public class AndroidRandomChromosomeFactory implements IChromosomeFactory<TestCa
                 chosenAction = getSwipeDownAction(executableActions);
             } else if (currentStep == 4) {
                 chosenAction = getSiguienteAction(executableActions);
+            } else if (restartAppAfterLogin && currentStep == 5) {
+                chosenAction = getRestartAppAction();
             }
 
             if (chosenAction == null) {

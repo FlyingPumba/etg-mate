@@ -242,6 +242,10 @@ public class UIAbstractionLayer {
     public void restartApp() {
         deviceMgr.restartApp();
         sleep(2000);
+
+        // extra sleep for CuidAR Splash Screen
+        sleep(3000);
+
         currentScreenState = ScreenStateFactory.getScreenState("ActionsScreenState");
         String currentPackageName = currentScreenState.getPackageName();
         if (currentPackageName != null && currentPackageName.contains("com.google.android.packageinstaller")) {

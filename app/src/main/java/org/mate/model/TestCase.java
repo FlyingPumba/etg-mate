@@ -6,6 +6,7 @@ import org.mate.MATE;
 import org.mate.interaction.UIAbstractionLayer;
 import org.mate.state.IScreenState;
 import org.mate.ui.Action;
+import org.mate.ui.ActionType;
 import org.mate.utils.Optional;
 import org.mate.utils.Randomness;
 
@@ -184,7 +185,8 @@ public class TestCase {
      * @return True if action successful inbound false if outbound, crash, or some unkown failure
      */
     public boolean updateTestCase(Action a, String event) {
-        if (!MATE.uiAbstractionLayer.getExecutableActions().contains(a)) {
+        if (a.getActionType() != ActionType.RESTART &&
+                !MATE.uiAbstractionLayer.getExecutableActions().contains(a)) {
             throw new IllegalStateException("Action not applicable to current state");
         }
         addEvent(a);

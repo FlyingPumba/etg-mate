@@ -98,6 +98,8 @@ public class DeviceMgr implements IApp {
                 device.pressEnter();
                 break;
 
+            case RESTART:
+                restartApp();
         }
 
         //if there is a progress bar associated to that action
