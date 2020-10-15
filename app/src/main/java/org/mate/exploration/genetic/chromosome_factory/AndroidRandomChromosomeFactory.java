@@ -72,6 +72,10 @@ public class AndroidRandomChromosomeFactory implements IChromosomeFactory<TestCa
                     return chromosome;
                 }
             }
+        } catch (Exception e) {
+            // do nothing
+            MATE.log_acc("An exception was found while creating Android Random Chromosome: " +
+                    e.getMessage());
         } finally {
             //store coverage in an case
             if (storeCoverage) {
@@ -104,7 +108,7 @@ public class AndroidRandomChromosomeFactory implements IChromosomeFactory<TestCa
             this.currentStep = 0;
         }
 
-        public abstract Action getNextAction();
+        public abstract Action getNextAction() throws Exception;
 
         public boolean hasNextAction() {
             return currentStep < totalSteps;
@@ -191,7 +195,7 @@ public class AndroidRandomChromosomeFactory implements IChromosomeFactory<TestCa
         }
 
         @Override
-        public Action getNextAction() {
+        public Action getNextAction() throws Exception {
             List<Action> executableActions = uiAbstractionLayer.getExecutableActions();
             Action chosenAction = null;
             if (currentStep == 0) {
@@ -209,7 +213,7 @@ public class AndroidRandomChromosomeFactory implements IChromosomeFactory<TestCa
             }
 
             if (chosenAction == null) {
-                throw new Error("No se encontró la acción correspondiente para el paso" +
+                throw new Exception("No se encontró la acción correspondiente para el paso" +
                         currentStep + " en el LoginStrategy " + this.getClass().getSimpleName());
             }
 
@@ -233,7 +237,7 @@ public class AndroidRandomChromosomeFactory implements IChromosomeFactory<TestCa
         }
 
         @Override
-        public Action getNextAction() {
+        public Action getNextAction() throws Exception {
             List<Action> executableActions = uiAbstractionLayer.getExecutableActions();
             Action chosenAction = null;
             if (currentStep == 0) {
@@ -247,7 +251,7 @@ public class AndroidRandomChromosomeFactory implements IChromosomeFactory<TestCa
             }
 
             if (chosenAction == null) {
-                throw new Error("No se encontró la acción correspondiente para el paso" +
+                throw new Exception("No se encontró la acción correspondiente para el paso" +
                         currentStep + " en el LoginStrategy " + this.getClass().getSimpleName());
             }
 
@@ -271,7 +275,7 @@ public class AndroidRandomChromosomeFactory implements IChromosomeFactory<TestCa
         }
 
         @Override
-        public Action getNextAction() {
+        public Action getNextAction() throws Exception {
             List<Action> executableActions = uiAbstractionLayer.getExecutableActions();
             Action chosenAction = null;
             if (currentStep == 0) {
@@ -285,7 +289,7 @@ public class AndroidRandomChromosomeFactory implements IChromosomeFactory<TestCa
             }
 
             if (chosenAction == null) {
-                throw new Error("No se encontró la acción correspondiente para el paso" +
+                throw new Exception("No se encontró la acción correspondiente para el paso" +
                         currentStep + " en el LoginStrategy " + this.getClass().getSimpleName());
             }
 
@@ -309,7 +313,7 @@ public class AndroidRandomChromosomeFactory implements IChromosomeFactory<TestCa
         }
 
         @Override
-        public Action getNextAction() {
+        public Action getNextAction() throws Exception {
             List<Action> executableActions = uiAbstractionLayer.getExecutableActions();
             Action chosenAction = null;
             if (currentStep == 0) {
@@ -323,7 +327,7 @@ public class AndroidRandomChromosomeFactory implements IChromosomeFactory<TestCa
             }
 
             if (chosenAction == null) {
-                throw new Error("No se encontró la acción correspondiente para el paso" +
+                throw new Exception("No se encontró la acción correspondiente para el paso" +
                         currentStep + " en el LoginStrategy " + this.getClass().getSimpleName());
             }
 
