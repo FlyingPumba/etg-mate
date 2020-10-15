@@ -209,7 +209,8 @@ public class AndroidRandomChromosomeFactory implements IChromosomeFactory<TestCa
             }
 
             if (chosenAction == null) {
-                throw new Error("No se encontró la acción correspondiente.");
+                throw new Error("No se encontró la acción correspondiente para el paso" +
+                        currentStep + " en el LoginStrategy " + this.getClass().getSimpleName());
             }
 
             currentStep++;
@@ -246,7 +247,8 @@ public class AndroidRandomChromosomeFactory implements IChromosomeFactory<TestCa
             }
 
             if (chosenAction == null) {
-                throw new Error("No se encontró la acción correspondiente.");
+                throw new Error("No se encontró la acción correspondiente para el paso" +
+                        currentStep + " en el LoginStrategy " + this.getClass().getSimpleName());
             }
 
             currentStep++;
@@ -283,7 +285,8 @@ public class AndroidRandomChromosomeFactory implements IChromosomeFactory<TestCa
             }
 
             if (chosenAction == null) {
-                throw new Error("No se encontró la acción correspondiente.");
+                throw new Error("No se encontró la acción correspondiente para el paso" +
+                        currentStep + " en el LoginStrategy " + this.getClass().getSimpleName());
             }
 
             currentStep++;
@@ -320,7 +323,8 @@ public class AndroidRandomChromosomeFactory implements IChromosomeFactory<TestCa
             }
 
             if (chosenAction == null) {
-                throw new Error("No se encontró la acción correspondiente.");
+                throw new Error("No se encontró la acción correspondiente para el paso" +
+                        currentStep + " en el LoginStrategy " + this.getClass().getSimpleName());
             }
 
             currentStep++;

@@ -45,7 +45,6 @@ public class ActionsScreenState extends AbstractScreenState {
         this.rootNodeInfo = appScreen.getRootNodeInfo();
         actions=null;
         this.appScreen = appScreen;
-
     }
 
     private int getMaxAmountOfID(Hashtable<String,Vector<Integer>> sameIDWidgets, String wid){
@@ -67,6 +66,11 @@ public class ActionsScreenState extends AbstractScreenState {
             i++;
         }
         return max;
+    }
+
+    @Override
+    public Vector<Widget> getWidgets() {
+        return widgets;
     }
 
     public Vector<Action> getActions(){
@@ -231,9 +235,6 @@ public class ActionsScreenState extends AbstractScreenState {
             }
         }
 
-        if (executables.size()==0)
-            executables.add(new Action(ActionType.BACK));
-
         if (appScreen.isHastoScrollDown()||appScreen.isHasToScrollUp()){
             executables.add(new Action(ActionType.SWIPE_DOWN));
             executables.add(new Action(ActionType.SWIPE_UP));
@@ -246,10 +247,12 @@ public class ActionsScreenState extends AbstractScreenState {
 
         if (activityName.contains("GoogleOAuthActivity"))
             executables = new Vector<Action>();
-        executables.add(new Action(ActionType.BACK));
-        //Se comenta acción menu porque se puede reproducir mediate click y trae problemas en mate luego de un back (el back deja de responder)
-//        executables.add(new Action(ActionType.MENU));
 
+        executables.add(new Action(ActionType.BACK));
+
+        // Se comenta acción menu porque se puede reproducir mediate click y trae problemas en mate
+        // luego de un back (el back deja de responder)
+        // executables.add(new Action(ActionType.MENU));
 
         actions = executables;
         return executables;

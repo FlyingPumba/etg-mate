@@ -12,33 +12,23 @@ public class ScreenStateFactory {
         if (stateType==null)
             return null;
         if (stateType.equals("ActionsScreenState")) {
-            ActionsScreenState state =  new ActionsScreenState(new AppScreen());
-            //if there is only the back button
-            if (state.getActions().size()==0){
-                try{
-                    Thread.sleep(5000);
-                }
-                catch(Exception e){
 
-                }
-            }
-            else
-                return state;
+            ActionsScreenState state = new ActionsScreenState(new AppScreen());
+            for (int i = 0; i < 2; i++) {
+                if (state.getWidgets().size() == 0) {
+                    // There is a strong possibility that the Accessibility Service failed to parse
+                    // the screen. Let's try again after some time.
 
-            state =  new ActionsScreenState(new AppScreen());
-            //if there is only the back button
-            if (state.getActions().size()==0){
-                try{
-                    Thread.sleep(5000);
-                }
-                catch(Exception e){
+                    try {
+                        Thread.sleep(5000);
+                    } catch(Exception e){ }
 
+                    state =  new ActionsScreenState(new AppScreen());
+                } else {
+                    return state;
                 }
             }
-            else
-                return state;
 
-            state =  new ActionsScreenState(new AppScreen());
             return state;
         }
         return null;
