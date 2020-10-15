@@ -48,8 +48,16 @@ public class RandomExploration {
             }
 
             // double fitness = fitnessFunction.getFitness(chromosome);
-            double combinedCoverage = EnvironmentManager.getCombinedCoverage();
-            if (combinedCoverage > currentCombinedCoverage) {
+
+            // get the combined coverage of representative individuals + the new individual
+            List<IChromosome<TestCase>> individuals = new ArrayList<>(representativeIndividuals);
+            individuals.add(chromosome);
+
+            double combinedCoverage = EnvironmentManager.getCombinedCoverage(individuals);
+            boolean combinedCoverageIncreased = combinedCoverage > currentCombinedCoverage;
+            MATE.log_acc("Combined coverage after: " + chromosome.toString() + ": " +
+                    combinedCoverage + (combinedCoverageIncreased ? " -> INCREASED" : ""));
+            if (combinedCoverageIncreased) {
                 representativeIndividuals.add(chromosome);
                 currentCombinedCoverage = combinedCoverage;
             }
