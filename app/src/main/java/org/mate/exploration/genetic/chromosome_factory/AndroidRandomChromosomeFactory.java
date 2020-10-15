@@ -12,6 +12,7 @@ import org.mate.ui.ActionType;
 import org.mate.ui.EnvironmentManager;
 import org.mate.utils.Randomness;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -45,13 +46,13 @@ public class AndroidRandomChromosomeFactory implements IChromosomeFactory<TestCa
         Chromosome<TestCase> chromosome = new Chromosome<>(testCase);
 
         LoginStrategy[] loginStrategies = {
-                new SuccessfulLogin(true),
-                new SuccessfulLogin(false),
+//                new SuccessfulLogin(true),
+//                new SuccessfulLogin(false),
                 new SuccessfulLogin(true, true),
                 new SuccessfulLogin(false, true),
-                new MissingDNILogin(),
-                new MissingNroTramiteLogin(),
-                new MissingSexLogin(),
+//                new MissingDNILogin(),
+//                new MissingNroTramiteLogin(),
+//                new MissingSexLogin(),
         };
         LoginStrategy loginStrategy = Randomness.randomElement(Arrays.asList(loginStrategies));
 
@@ -96,7 +97,18 @@ public class AndroidRandomChromosomeFactory implements IChromosomeFactory<TestCa
 
     protected Action selectRandomAction() {
         List<Action> executableActions = uiAbstractionLayer.getExecutableActions();
-        return Randomness.randomElement(executableActions);
+
+        // Give extra probability to all actions that are not BACK
+        List<Action> actions = new ArrayList<>();
+        for (Action action : executableActions) {
+            if (action.getActionType() != ActionType.BACK) {
+                actions.add(action);
+            }
+
+            actions.add(action);
+        }
+
+        return Randomness.randomElement(actions);
     }
 
     private abstract class LoginStrategy {

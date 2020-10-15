@@ -226,7 +226,7 @@ public class UIAbstractionLayer {
         deviceMgr.reinstallApp();
         sleep(5000);
         deviceMgr.restartApp();
-        sleep(2000);
+        sleep(4000);
 
         // extra sleep for CuidAR Splash Screen
         sleep(3000);

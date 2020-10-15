@@ -19,7 +19,7 @@ import java.util.Vector;
 public class TestCase {
     private String id;
     private Set<String> visitedActivities;
-    private double coverage;
+    private Vector<Double> fitness;
     private String chromosomeHash;
 
     @JsonIgnore
@@ -43,7 +43,7 @@ public class TestCase {
         setId(id);
         crashDetected = false;
         visitedActivities = new HashSet<>();
-        coverage = 0;
+        fitness = new Vector<>();
         visitedStates = new HashSet<>();
         eventSequence = new Vector<>();
         sparseness = 0;
@@ -217,12 +217,16 @@ public class TestCase {
         updateStatesMap(currentScreenstate.getId(), event);
     }
 
-    public void setCoverage(double coverage) {
-        this.coverage = coverage;
+    public void setFitness(Vector<Double> fitness) {
+        this.fitness = fitness;
     }
 
-    public double getCoverage() {
-        return this.coverage;
+    public void addFitnessValue(double value) {
+        this.fitness.add(value);
+    }
+
+    public Vector<Double> getFitness() {
+        return this.fitness;
     }
 
     public String getChromosomeHash() {

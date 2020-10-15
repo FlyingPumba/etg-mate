@@ -9,6 +9,7 @@ import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.uiautomator.UiDevice;
 import android.util.Log;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.mate.exceptions.AUTCrashException;
@@ -60,6 +61,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 import java.util.Vector;
 import java.util.concurrent.Callable;
@@ -154,7 +156,7 @@ public class MATE {
                 if (explorationStrategy.equals("OnePlusOneNew")) {
                     uiAbstractionLayer = new UIAbstractionLayer(deviceMgr, packageName);
 
-                    IGeneticAlgorithm<TestCase> onePlusOneNew = new GeneticAlgorithmBuilder()
+                    final IGeneticAlgorithm<TestCase> onePlusOneNew = new GeneticAlgorithmBuilder()
                             .withAlgorithm(org.mate.exploration.genetic.algorithm.OnePlusOne.ALGORITHM_NAME)
                             .withChromosomeFactory(AndroidRandomChromosomeFactory.CHROMOSOME_FACTORY_ID)
                             .withSelectionFunction(FitnessSelectionFunction.SELECTION_FUNCTION_ID)
@@ -162,7 +164,17 @@ public class MATE {
                             .withFitnessFunction(AndroidStateFitnessFunction.FITNESS_FUNCTION_ID)
                             .withTerminationCondition(IterTerminationCondition.TERMINATION_CONDITION_ID)
                             .build();
-                    onePlusOneNew.run();
+
+                    TimeoutRun.timeoutRun(new Callable<Void>() {
+                        @Override
+                        public Void call() throws Exception {
+                            onePlusOneNew.run();
+                            return null;
+                        }
+                    }, MATE.TIME_OUT);
+
+                    dumpCombinedCoverageIfNeeded(onePlusOneNew);
+                    dumpBestTestCasesToJSON(onePlusOneNew);
                 } else if (explorationStrategy.equals("NSGA-II")) {
                     uiAbstractionLayer = new UIAbstractionLayer(deviceMgr, packageName);
                     MATE.log_acc("Activities");
@@ -170,7 +182,7 @@ public class MATE {
                         MATE.log_acc("\t" + s);
                     }
 
-                    IGeneticAlgorithm<TestCase> nsga = new GeneticAlgorithmBuilder()
+                    final IGeneticAlgorithm<TestCase> nsga = new GeneticAlgorithmBuilder()
                             .withAlgorithm(NSGAII.ALGORITHM_NAME)
                             .withChromosomeFactory(AndroidRandomChromosomeFactory.CHROMOSOME_FACTORY_ID)
                             .withSelectionFunction(FitnessSelectionFunction.SELECTION_FUNCTION_ID)
@@ -179,7 +191,17 @@ public class MATE {
                             .withFitnessFunction(AndroidStateFitnessFunction.FITNESS_FUNCTION_ID)
                             .withTerminationCondition(IterTerminationCondition.TERMINATION_CONDITION_ID)
                             .build();
-                    nsga.run();
+
+                    TimeoutRun.timeoutRun(new Callable<Void>() {
+                        @Override
+                        public Void call() throws Exception {
+                            nsga.run();
+                            return null;
+                        }
+                    }, MATE.TIME_OUT);
+
+                    dumpCombinedCoverageIfNeeded(nsga);
+                    dumpBestTestCasesToJSON(nsga);
                 } else if (explorationStrategy.equals("GenericGeneticAlgorithm")) {
                     uiAbstractionLayer = new UIAbstractionLayer(deviceMgr, packageName);
                     MATE.log_acc("Activities");
@@ -209,10 +231,8 @@ public class MATE {
                         }
                     }, MATE.TIME_OUT);
 
-                    if (Properties.STORE_COVERAGE) {
-                        EnvironmentManager.storeCoverageData(genericGA, null);
-                        MATE.log_acc("Total coverage: " + EnvironmentManager.getCombinedCoverage());
-                    }
+                    dumpCombinedCoverageIfNeeded(genericGA);
+                    dumpBestTestCasesToJSON(genericGA);
                 } else if (explorationStrategy.equals("Sapienz")) {
                     uiAbstractionLayer = new UIAbstractionLayer(deviceMgr, packageName);
                     MATE.log_acc("Activities");
@@ -247,10 +267,8 @@ public class MATE {
                         }
                     }, MATE.TIME_OUT);
 
-                    if (Properties.STORE_COVERAGE) {
-                        EnvironmentManager.storeCoverageData(nsga, null);
-                        MATE.log_acc("Total coverage: " + EnvironmentManager.getCombinedCoverage());
-                    }
+                    dumpCombinedCoverageIfNeeded(nsga);
+                    dumpBestTestSuitesToJSON(nsga);
                 } else if (explorationStrategy.equals("HeuristicRandom")) {
                     uiAbstractionLayer = new UIAbstractionLayer(deviceMgr, packageName);
                     MATE.log_acc("Activities");
@@ -268,10 +286,8 @@ public class MATE {
                         }
                     }, MATE.TIME_OUT);
 
-                    if (Properties.STORE_COVERAGE) {
-                        EnvironmentManager.storeCoverageData(heuristicExploration, null);
-                        MATE.log_acc("Total coverage: " + EnvironmentManager.getCombinedCoverage());
-                    }
+                    dumpCombinedCoverageIfNeeded(heuristicExploration);
+                    dumpBestIndividualsToJSON(heuristicExploration);
                 } else if (explorationStrategy.equals("RandomExploration")) {
                     uiAbstractionLayer = new UIAbstractionLayer(deviceMgr, packageName);
                     MATE.log_acc("Activities");
@@ -293,29 +309,8 @@ public class MATE {
 
                     timeoutReached.set(true);
 
-                    if (Properties.STORE_COVERAGE) {
-                        EnvironmentManager.storeCoverageData(randomExploration, null);
-                        MATE.log_acc("Total coverage: " + EnvironmentManager.getCombinedCoverage());
-                    }
-
-                    randomExploration.takeScreenshotsToRepresentativeIndividuals();
-                    List<IChromosome<TestCase>> individuals = randomExploration.getRepresentativeIndividual();
-                    IFitnessFunction<TestCase> fitnessFunction = randomExploration.getFitnessFunctions();
-
-                    List<TestCase> testCases = new ArrayList<>();
-                    for (IChromosome<TestCase> individual : individuals) {
-                        TestCase testCase = individual.getValue();
-
-                        testCase.setCoverage(fitnessFunction.getFitness(individual));
-                        testCase.setChromosomeHash(individual.toString());
-
-                        testCases.add(testCase);
-                    }
-
-                    // write test cases to JSON and save in Server
-                    ObjectMapper mapper = new ObjectMapper();
-                    String jsonString = mapper.writeValueAsString(testCases);
-                    EnvironmentManager.storeJsonTestCases(jsonString);
+                    dumpCombinedCoverageIfNeeded(randomExploration);
+                    dumpBestIndividualsToJSON(randomExploration);
                 } else if (explorationStrategy.equals(MOSA.ALGORITHM_NAME)) {
                     uiAbstractionLayer = new UIAbstractionLayer(deviceMgr, packageName);
 
@@ -356,10 +351,8 @@ public class MATE {
                         }
                     }, MATE.TIME_OUT);
 
-                    if (Properties.STORE_COVERAGE) {
-                        EnvironmentManager.storeCoverageData(mosa, null);
-                        MATE.log_acc("Total coverage: " + EnvironmentManager.getCombinedCoverage());
-                    }
+                    dumpCombinedCoverageIfNeeded(mosa);
+                    dumpBestTestCasesToJSON(mosa);
                 } else if (explorationStrategy.equals("Mio")) {
                     uiAbstractionLayer = new UIAbstractionLayer(deviceMgr, packageName);
 
@@ -402,10 +395,8 @@ public class MATE {
                         }
                     }, MATE.TIME_OUT);
 
-                    if (Properties.STORE_COVERAGE) {
-                        EnvironmentManager.storeCoverageData(mio, null);
-                        MATE.log_acc("Total coverage: " + EnvironmentManager.getCombinedCoverage());
-                    }
+                    dumpCombinedCoverageIfNeeded(mio);
+                    dumpBestTestCasesToJSON(mio);
                 } else if (explorationStrategy.equals("RandomWalk")) {
                     uiAbstractionLayer = new UIAbstractionLayer(deviceMgr, packageName);
                     MATE.log("Starting random walk now ...");
@@ -427,25 +418,8 @@ public class MATE {
                         }
                     }, MATE.TIME_OUT);
 
-                    List<IChromosome<TestCase>> survivors = randomWalk.getGenerationSurvivors();
-
-                    List<TestCase> testCases = new ArrayList<>();
-                    for (IChromosome<TestCase> survivor : survivors) {
-                        TestCase testCase = survivor.getValue();
-
-                        List<IFitnessFunction<TestCase>> fitnessFunctions = randomWalk.getFitnessFunctions();
-                        IFitnessFunction<TestCase> fitnessFunction = fitnessFunctions.get(0);
-                        testCase.setCoverage(fitnessFunction.getFitness(survivor));
-                        testCase.setChromosomeHash(survivor.toString());
-
-                        testCases.add(testCase);
-                    }
-
-                    // write test cases to JSON and save in Server
-                    ObjectMapper mapper = new ObjectMapper();
-                    String jsonString = mapper.writeValueAsString(testCases);
-                    EnvironmentManager.storeJsonTestCases(jsonString);
-
+                    dumpCombinedCoverageIfNeeded(randomWalk);
+                    dumpBestTestCasesToJSON(randomWalk);
                 } else if (explorationStrategy.equals("RandomWalkActivityCoverage")) {
                     uiAbstractionLayer = new UIAbstractionLayer(deviceMgr, packageName);
                     MATE.log("Starting random walk now ...");
@@ -468,18 +442,8 @@ public class MATE {
                         }
                     }, MATE.TIME_OUT);
 
-                    List<IChromosome<TestCase>> survivors = randomWalk.getGenerationSurvivors();
-
-                    List<TestCase> testCases = new ArrayList<>();
-                    for (IChromosome<TestCase> survivor : survivors) {
-                        testCases.add(survivor.getValue());
-                    }
-
-                    // write test cases to JSON and save in Server
-                    ObjectMapper mapper = new ObjectMapper();
-                    String jsonString = mapper.writeValueAsString(testCases);
-                    EnvironmentManager.storeJsonTestCases(jsonString);
-
+                    dumpCombinedCoverageIfNeeded(randomWalk);
+                    dumpBestTestCasesToJSON(randomWalk);
                 } else if (explorationStrategy.equals("RandomWalkStateCoverage")) {
                     uiAbstractionLayer = new UIAbstractionLayer(deviceMgr, packageName);
                     MATE.log("Starting random walk now ...");
@@ -501,6 +465,9 @@ public class MATE {
                             return null;
                         }
                     }, MATE.TIME_OUT);
+
+                    dumpCombinedCoverageIfNeeded(randomWalk);
+                    dumpBestTestCasesToJSON(randomWalk);
                 }
             } else
                 MATE.log("Emulator is null");
@@ -511,6 +478,108 @@ public class MATE {
             //EnvironmentManager.deleteAllScreenShots(packageName);
         }
 
+    }
+
+    private void dumpCombinedCoverageIfNeeded(Object algorithm) {
+        if (Properties.STORE_COVERAGE) {
+            EnvironmentManager.storeCoverageData(algorithm, null);
+            MATE.log_acc("Total coverage: " + EnvironmentManager.getCombinedCoverage());
+        }
+    }
+
+    private void dumpBestIndividualsToJSON(RandomExploration randomExploration) throws JsonProcessingException {
+        List<IChromosome<TestCase>> individuals = randomExploration.getRepresentativeIndividual();
+        IFitnessFunction<TestCase> fitnessFunction = randomExploration.getFitnessFunctions();
+
+        List<TestCase> testCases = new ArrayList<>();
+        for (IChromosome<TestCase> individual : individuals) {
+            TestCase testCase = individual.getValue();
+
+            testCase.addFitnessValue(fitnessFunction.getFitness(individual));
+            testCase.setChromosomeHash(individual.toString());
+
+            testCases.add(testCase);
+        }
+
+        takeScreenshotsToTestCases(testCases);
+
+        // write test cases to JSON and save in Server
+        ObjectMapper mapper = new ObjectMapper();
+        String jsonString = mapper.writeValueAsString(testCases);
+        EnvironmentManager.storeJsonTestCases(jsonString);
+    }
+
+    private void dumpBestTestCasesToJSON(IGeneticAlgorithm<TestCase> geneticAlgorithm) throws JsonProcessingException {
+        List<IChromosome<TestCase>> individuals = geneticAlgorithm.getGenerationSurvivors();
+        List<IFitnessFunction<TestCase>> fitnessFunctions = geneticAlgorithm.getFitnessFunctions();
+
+        List<TestCase> testCases = new ArrayList<>();
+        for (IChromosome<TestCase> individual : individuals) {
+            TestCase testCase = individual.getValue();
+
+            for (IFitnessFunction<TestCase> fitnessFunction : fitnessFunctions) {
+                testCase.addFitnessValue(fitnessFunction.getFitness(individual));
+            }
+            testCase.setChromosomeHash(individual.toString());
+
+            testCases.add(testCase);
+        }
+
+        takeScreenshotsToTestCases(testCases);
+
+        // write test cases to JSON and save in Server
+        ObjectMapper mapper = new ObjectMapper();
+        String jsonString = mapper.writeValueAsString(testCases);
+        EnvironmentManager.storeJsonTestCases(jsonString);
+    }
+
+    private void dumpBestTestSuitesToJSON(IGeneticAlgorithm<TestSuite> geneticAlgorithm) throws JsonProcessingException {
+        List<IChromosome<TestSuite>> individuals = geneticAlgorithm.getGenerationSurvivors();
+        List<IFitnessFunction<TestSuite>> fitnessFunctions = geneticAlgorithm.getFitnessFunctions();
+
+        List<TestCase> testCases = new ArrayList<>();
+        for (IChromosome<TestSuite> individual : individuals) {
+            TestSuite testSuite = individual.getValue();
+
+            for (TestCase testCase : testSuite.getTestCases()) {
+                for (IFitnessFunction<TestSuite> fitnessFunction : fitnessFunctions) {
+                    testCase.addFitnessValue(fitnessFunction.getFitness(individual));
+                }
+                testCase.setChromosomeHash(individual.toString());
+
+                testCases.add(testCase);
+            }
+        }
+
+        takeScreenshotsToTestCases(testCases);
+
+        // write test cases to JSON and save in Server
+        ObjectMapper mapper = new ObjectMapper();
+        String jsonString = mapper.writeValueAsString(testCases);
+        EnvironmentManager.storeJsonTestCases(jsonString);
+    }
+
+    private void dumpBestIndividualsToJSON(HeuristicExploration heuristicExploration) {
+        throw new Error("Not implemented");
+    }
+
+    public void takeScreenshotsToTestCases(List<TestCase> testCases) {
+        for (int i = 0; i < testCases.size(); i++) {
+            TestCase testCase = testCases.get(i);
+            MATE.uiAbstractionLayer.resetApp();
+
+            Vector<Action> actions = testCase.getEventSequence();
+            for (int j = 0; j < actions.size(); j++) {
+                String name = String.format(Locale.US, "MATE_%d_%d", i, j);
+                EnvironmentManager.namedScreenShot(name);
+
+                Action action = actions.get(j);
+                MATE.uiAbstractionLayer.executeAction(action);
+            }
+
+            String name = String.format(Locale.US, "MATE_%d_%d", i, actions.size());
+            EnvironmentManager.namedScreenShot(name);
+        }
     }
 
     private void checkVisitedActivities(String explorationStrategy) {

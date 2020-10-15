@@ -64,27 +64,6 @@ public class RandomExploration {
         }
     }
 
-    public void takeScreenshotsToRepresentativeIndividuals() {
-        for (int i = 0; i < representativeIndividuals.size(); i++) {
-            IChromosome<TestCase> individual = representativeIndividuals.get(i);
-
-            MATE.uiAbstractionLayer.resetApp();
-
-            TestCase testCase = individual.getValue();
-            Vector<Action> actions = testCase.getEventSequence();
-            for (int j = 0; j < actions.size(); j++) {
-                String name = String.format("MATE_%d_%d", i, j);
-                EnvironmentManager.namedScreenShot(name);
-
-                Action action = actions.get(j);
-                MATE.uiAbstractionLayer.executeAction(action);
-            }
-
-            String name = String.format("MATE_%d_%d", i, actions.size());
-            EnvironmentManager.namedScreenShot(name);
-        }
-    }
-
     public List<IChromosome<TestCase>> getRepresentativeIndividual() {
         return representativeIndividuals;
     }
