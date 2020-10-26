@@ -2,16 +2,11 @@ package org.mate.state.executables;
 
 import android.view.accessibility.AccessibilityNodeInfo;
 
-import org.mate.MATE;
-import org.mate.state.IScreenState;
 import org.mate.ui.Action;
 import org.mate.ui.ActionType;
 import org.mate.ui.Widget;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Hashtable;
-import java.util.Objects;
-import java.util.Set;
 import java.util.Vector;
 
 /**
@@ -20,6 +15,7 @@ import java.util.Vector;
 
 public class ActionsScreenState extends AbstractScreenState {
 
+    private final Widget rootWidget;
     private Vector<Action> actions;
     private static Hashtable<String,Hashtable<String,Vector<Integer>>> idSizes = new Hashtable<String,Hashtable<String,Vector<Integer>>>();
     private Vector<Float> pheromone;
@@ -42,6 +38,7 @@ public class ActionsScreenState extends AbstractScreenState {
     public ActionsScreenState(AppScreen appScreen){
         super(appScreen.getPackageName(),appScreen.getActivityName());
         this.widgets = appScreen.getWidgets();
+        this.rootWidget = appScreen.getRootWidget();
         this.rootNodeInfo = appScreen.getRootNodeInfo();
         actions=null;
         this.appScreen = appScreen;
@@ -89,6 +86,10 @@ public class ActionsScreenState extends AbstractScreenState {
         Hashtable<String,Integer> idAmount = new Hashtable<String,Integer>();
         boolean selected;
         for (Widget widget: widgets){
+            if (!widget.isDisplayed() || widget.isAndroidView()) {
+                continue;
+            }
+
             selected = false;
 
             if (widget.getClazz().contains("Button"))
@@ -169,27 +170,27 @@ public class ActionsScreenState extends AbstractScreenState {
             if (selected){
                 Action event;
                 if (!widget.isEditable()){
-                    event = new Action(widget, ActionType.CLICK);
+                    event = new Action(rootWidget, widget.getWidgetPath(),  ActionType.CLICK);
                     executables.add(event);
                     widget.setClickable(true);
                 }
 
                 if (widget.isEditable() || widget.getClazz().contains("Edit")){
-                    event = new Action(widget,ActionType.TYPE_TEXT);
+                    event = new Action(rootWidget, widget.getWidgetPath(), ActionType.TYPE_TEXT);
                     executables.add(0,event);
                     editables++;
                 }
 
 
                 if (widget.isLongClickable()&&!widget.isEditable()){
-                    event = new Action(widget, ActionType.LONG_CLICK);
+                    event = new Action(rootWidget, widget.getWidgetPath(),  ActionType.LONG_CLICK);
                     executables.add(event);
                     widget.setLongClickable(true);
                 }
                 else
                 {
                     if ((widget.isSonOfLongClickable()) && (!widget.isEditable()&& !widget.getClazz().contains("TextView"))){
-                        event = new Action(widget, ActionType.LONG_CLICK);
+                        event = new Action(rootWidget, widget.getWidgetPath(),  ActionType.LONG_CLICK);
                         executables.add(event);
                         widget.setLongClickable(true);
                     }
@@ -199,16 +200,16 @@ public class ActionsScreenState extends AbstractScreenState {
                 if (widget.isScrollable()){
 
                     if (!widget.getClazz().contains("Spinner")&&!widget.isSonOf("Spinner")){
-                        event = new Action(widget,ActionType.SWIPE_LEFT);
+                        event = new Action(rootWidget, widget.getWidgetPath(), ActionType.SWIPE_LEFT);
                         executables.add(event);
 
-                        event = new Action(widget,ActionType.SWIPE_RIGHT);
+                        event = new Action(rootWidget, widget.getWidgetPath(), ActionType.SWIPE_RIGHT);
                         executables.add(event);
 
-                        event = new Action(widget,ActionType.SWIPE_UP);
+                        event = new Action(rootWidget, widget.getWidgetPath(), ActionType.SWIPE_UP);
                         executables.add(event);
 
-                        event = new Action(widget,ActionType.SWIPE_DOWN);
+                        event = new Action(rootWidget, widget.getWidgetPath(), ActionType.SWIPE_DOWN);
                         executables.add(event);
 
                         widget.setScrollable(true);

@@ -1,7 +1,6 @@
 package org.mate.interaction;
 
 import android.app.Instrumentation;
-import androidx.test.uiautomator.UiDevice;
 
 import org.mate.MATE;
 import org.mate.exceptions.AUTCrashException;

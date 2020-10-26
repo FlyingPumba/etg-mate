@@ -1,6 +1,7 @@
 package org.mate.exploration.genetic.chromosome_factory;
 
 import org.mate.exploration.genetic.chromosome.IChromosome;
+import org.mate.interaction.UIAbstractionLayer;
 
 /**
  * Interface for generating {@link IChromosome}s used by {@link IGeneticAlgorithm} and
@@ -13,4 +14,6 @@ public interface IChromosomeFactory<T> {
      * @return generated chromosome
      */
     IChromosome<T> createChromosome();
+
+    UIAbstractionLayer getUiAbstractionLayer();
 }

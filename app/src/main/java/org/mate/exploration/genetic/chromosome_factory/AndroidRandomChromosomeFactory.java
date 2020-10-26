@@ -5,6 +5,11 @@ import org.mate.Properties;
 import org.mate.exploration.genetic.chromosome.Chromosome;
 import org.mate.exploration.genetic.chromosome.IChromosome;
 import org.mate.exploration.genetic.fitness.LineCoveredPercentageFitnessFunction;
+import org.mate.exploration.login_strategies.LoginStrategy;
+import org.mate.exploration.login_strategies.MissingDNILogin;
+import org.mate.exploration.login_strategies.MissingNroTramiteLogin;
+import org.mate.exploration.login_strategies.MissingSexLogin;
+import org.mate.exploration.login_strategies.SuccessfulLogin;
 import org.mate.interaction.UIAbstractionLayer;
 import org.mate.model.TestCase;
 import org.mate.ui.Action;
@@ -46,13 +51,13 @@ public class AndroidRandomChromosomeFactory implements IChromosomeFactory<TestCa
         Chromosome<TestCase> chromosome = new Chromosome<>(testCase);
 
         LoginStrategy[] loginStrategies = {
-//                new SuccessfulLogin(true),
-//                new SuccessfulLogin(false),
-                new SuccessfulLogin(true, true),
-                new SuccessfulLogin(false, true),
-//                new MissingDNILogin(),
-//                new MissingNroTramiteLogin(),
-//                new MissingSexLogin(),
+                new SuccessfulLogin( this, true),
+                new SuccessfulLogin( this, false),
+                new SuccessfulLogin(this, true, true),
+                new SuccessfulLogin(this, false, true),
+//                new MissingDNILogin(this),
+//                new MissingNroTramiteLogin(this),
+//                new MissingSexLogin(this),
         };
         LoginStrategy loginStrategy = Randomness.randomElement(Arrays.asList(loginStrategies));
 
@@ -95,6 +100,11 @@ public class AndroidRandomChromosomeFactory implements IChromosomeFactory<TestCa
         return chromosome;
     }
 
+    @Override
+    public UIAbstractionLayer getUiAbstractionLayer() {
+        return uiAbstractionLayer;
+    }
+
     protected Action selectRandomAction() {
         List<Action> executableActions = uiAbstractionLayer.getExecutableActions();
 
@@ -109,242 +119,5 @@ public class AndroidRandomChromosomeFactory implements IChromosomeFactory<TestCa
         }
 
         return Randomness.randomElement(actions);
-    }
-
-    private abstract class LoginStrategy {
-        protected int totalSteps;
-        protected int currentStep;
-
-        private LoginStrategy(int totalSteps) {
-            this.totalSteps = totalSteps;
-            this.currentStep = 0;
-        }
-
-        public abstract Action getNextAction() throws Exception;
-
-        public boolean hasNextAction() {
-            return currentStep < totalSteps;
-        }
-
-        protected Action getDNIAction(List<Action> executableActions, String dni) {
-            for (Action action: executableActions) {
-                if (action.getWidget().getHint().equals("DNI")) {
-                    action.setExtraInfo(dni);
-                    return action;
-                }
-            }
-            return null;
-        }
-
-        protected Action getNroTramiteAction(List<Action> executableActions, String nroTramite) {
-            for (Action action: executableActions) {
-                if (action.getWidget().getHint().equals("Nro de trámite")) {
-                    action.setExtraInfo(nroTramite);
-                    return action;
-                }
-            }
-            return null;
-        }
-
-        protected Action getSexoAction(List<Action> executableActions, String sexo) {
-            for (Action action: executableActions) {
-                if (action.getWidget().getText().equals(sexo)) {
-                    return action;
-                }
-            }
-            return null;
-        }
-
-        protected Action getSwipeDownAction(List<Action> executableActions) {
-            for (Action action: executableActions) {
-                if (action.getActionType().equals(ActionType.SWIPE_DOWN)) {
-                    return action;
-                }
-            }
-            return null;
-        }
-
-        protected Action getSiguienteAction(List<Action> executableActions) {
-            for (Action action: executableActions) {
-                if (action.getWidget().getText().equals("SIGUIENTE")) {
-                    return action;
-                }
-            }
-            return null;
-        }
-
-        protected Action getRestartAppAction() {
-            return new Action(ActionType.RESTART);
-        }
-    }
-
-    private class SuccessfulLogin extends LoginStrategy {
-        private boolean restartAppAfterLogin = false;
-        private String dni;
-        private String nroTramite;
-        private String sexo;
-
-        private SuccessfulLogin(int totalSteps) {
-            super(totalSteps);
-        }
-
-        public SuccessfulLogin(boolean infected) {
-            this(infected, false);
-        }
-
-        public SuccessfulLogin(boolean infected, boolean restartAppAfterLogin) {
-            super(restartAppAfterLogin ? 6: 5);
-            this.restartAppAfterLogin = restartAppAfterLogin;
-            if (infected) {
-                dni = "22222222";
-                nroTramite = "222";
-                sexo = "Masculino";
-            } else {
-                dni = "11111111";
-                nroTramite = "111";
-                sexo = "Femenino";
-            }
-        }
-
-        @Override
-        public Action getNextAction() throws Exception {
-            List<Action> executableActions = uiAbstractionLayer.getExecutableActions();
-            Action chosenAction = null;
-            if (currentStep == 0) {
-                chosenAction = getDNIAction(executableActions, dni);
-            } else if (currentStep == 1) {
-                chosenAction = getNroTramiteAction(executableActions, nroTramite);
-            } else if (currentStep == 2) {
-                chosenAction = getSexoAction(executableActions, sexo);
-            } else if (currentStep == 3) {
-                chosenAction = getSwipeDownAction(executableActions);
-            } else if (currentStep == 4) {
-                chosenAction = getSiguienteAction(executableActions);
-            } else if (restartAppAfterLogin && currentStep == 5) {
-                chosenAction = getRestartAppAction();
-            }
-
-            if (chosenAction == null) {
-                throw new Exception("No se encontró la acción correspondiente para el paso " +
-                        currentStep + " en el LoginStrategy " + this.getClass().getSimpleName());
-            }
-
-            currentStep++;
-            return chosenAction;
-        }
-    }
-
-    private class MissingDNILogin extends LoginStrategy {
-        private String nroTramite;
-        private String sexo;
-
-        private MissingDNILogin(int totalSteps) {
-            super(totalSteps);
-        }
-
-        public MissingDNILogin() {
-            super(4);
-            nroTramite = "222";
-            sexo = "Masculino";
-        }
-
-        @Override
-        public Action getNextAction() throws Exception {
-            List<Action> executableActions = uiAbstractionLayer.getExecutableActions();
-            Action chosenAction = null;
-            if (currentStep == 0) {
-                chosenAction = getNroTramiteAction(executableActions, nroTramite);
-            } else if (currentStep == 1) {
-                chosenAction = getSexoAction(executableActions, sexo);
-            } else if (currentStep == 2) {
-                chosenAction = getSwipeDownAction(executableActions);
-            } else if (currentStep == 3) {
-                chosenAction = getSiguienteAction(executableActions);
-            }
-
-            if (chosenAction == null) {
-                throw new Exception("No se encontró la acción correspondiente para el paso " +
-                        currentStep + " en el LoginStrategy " + this.getClass().getSimpleName());
-            }
-
-            currentStep++;
-            return chosenAction;
-        }
-    }
-
-    private class MissingNroTramiteLogin extends LoginStrategy {
-        private String dni;
-        private String sexo;
-
-        private MissingNroTramiteLogin(int totalSteps) {
-            super(totalSteps);
-        }
-
-        public MissingNroTramiteLogin() {
-            super(4);
-            dni = "22222222";
-            sexo = "Masculino";
-        }
-
-        @Override
-        public Action getNextAction() throws Exception {
-            List<Action> executableActions = uiAbstractionLayer.getExecutableActions();
-            Action chosenAction = null;
-            if (currentStep == 0) {
-                chosenAction = getDNIAction(executableActions, dni);
-            } else if (currentStep == 1) {
-                chosenAction = getSexoAction(executableActions, sexo);
-            } else if (currentStep == 2) {
-                chosenAction = getSwipeDownAction(executableActions);
-            } else if (currentStep == 3) {
-                chosenAction = getSiguienteAction(executableActions);
-            }
-
-            if (chosenAction == null) {
-                throw new Exception("No se encontró la acción correspondiente para el paso " +
-                        currentStep + " en el LoginStrategy " + this.getClass().getSimpleName());
-            }
-
-            currentStep++;
-            return chosenAction;
-        }
-    }
-
-    private class MissingSexLogin extends LoginStrategy {
-        private String dni;
-        private String nroTramite;
-
-        private MissingSexLogin(int totalSteps) {
-            super(totalSteps);
-        }
-
-        public MissingSexLogin() {
-            super(4);
-            dni = "22222222";
-            nroTramite = "222";
-        }
-
-        @Override
-        public Action getNextAction() throws Exception {
-            List<Action> executableActions = uiAbstractionLayer.getExecutableActions();
-            Action chosenAction = null;
-            if (currentStep == 0) {
-                chosenAction = getDNIAction(executableActions, dni);
-            } else if (currentStep == 1) {
-                chosenAction = getNroTramiteAction(executableActions, nroTramite);
-            } else if (currentStep == 2) {
-                chosenAction = getSwipeDownAction(executableActions);
-            } else if (currentStep == 3) {
-                chosenAction = getSiguienteAction(executableActions);
-            }
-
-            if (chosenAction == null) {
-                throw new Exception("No se encontró la acción correspondiente para el paso " +
-                        currentStep + " en el LoginStrategy " + this.getClass().getSimpleName());
-            }
-
-            currentStep++;
-            return chosenAction;
-        }
     }
 }

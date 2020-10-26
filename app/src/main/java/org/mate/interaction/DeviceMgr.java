@@ -10,11 +10,10 @@ import androidx.test.uiautomator.UiObject;
 import androidx.test.uiautomator.UiObject2;
 import androidx.test.uiautomator.UiObjectNotFoundException;
 import androidx.test.uiautomator.UiSelector;
-import androidx.core.util.Pair;
+
 import android.text.InputType;
 import android.util.Log;
 
-import org.apache.commons.lang.ArrayUtils;
 import org.mate.MATE;
 import org.mate.datagen.DataGenerator;
 import org.mate.exceptions.AUTCrashException;
@@ -26,7 +25,6 @@ import org.mate.ui.Swipe;
 import org.mate.ui.Widget;
 import org.mate.utils.Randomness;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;

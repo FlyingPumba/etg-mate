@@ -13,13 +13,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import static org.mate.ui.ActionType.BACK;
-import static org.mate.ui.ActionType.MENU;
-import static org.mate.ui.ActionType.SWIPE_DOWN;
-import static org.mate.ui.ActionType.SWIPE_LEFT;
-import static org.mate.ui.ActionType.SWIPE_RIGHT;
-import static org.mate.ui.ActionType.SWIPE_UP;
-
 public class HeuristicalChromosomeFactory extends AndroidRandomChromosomeFactory {
     public static final String CHROMOSOME_FACTORY_ID = "heuristical_chromosome_factory";
 

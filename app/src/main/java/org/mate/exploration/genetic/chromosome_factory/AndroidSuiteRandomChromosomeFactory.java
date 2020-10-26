@@ -4,6 +4,7 @@ import org.mate.MATE;
 import org.mate.Properties;
 import org.mate.exploration.genetic.chromosome.Chromosome;
 import org.mate.exploration.genetic.chromosome.IChromosome;
+import org.mate.interaction.UIAbstractionLayer;
 import org.mate.model.TestCase;
 import org.mate.model.TestSuite;
 import org.mate.ui.EnvironmentManager;
@@ -24,6 +25,11 @@ public class AndroidSuiteRandomChromosomeFactory implements IChromosomeFactory<T
 
     public AndroidSuiteRandomChromosomeFactory(int numTestCases, int maxNumEvents) {
         this(Properties.STORE_COVERAGE, numTestCases, maxNumEvents);
+    }
+
+    @Override
+    public UIAbstractionLayer getUiAbstractionLayer() {
+        return androidRandomChromosomeFactory.getUiAbstractionLayer();
     }
 
     @Override

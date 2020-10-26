@@ -22,7 +22,6 @@ import static org.mate.interaction.UIAbstractionLayer.ActionResult.FAILURE_APP_C
 import static org.mate.interaction.UIAbstractionLayer.ActionResult.FAILURE_EMULATOR_CRASH;
 import static org.mate.interaction.UIAbstractionLayer.ActionResult.FAILURE_UNKNOWN;
 import static org.mate.interaction.UIAbstractionLayer.ActionResult.SUCCESS;
-import static org.mate.interaction.UIAbstractionLayer.ActionResult.SUCCESS_NEW_STATE;
 import static org.mate.interaction.UIAbstractionLayer.ActionResult.SUCCESS_OUTBOUND;
 
 public class UIAbstractionLayer {

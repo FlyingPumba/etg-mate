@@ -35,6 +35,8 @@ public class Widget {
     private boolean longClickable;
     private boolean password;
     private boolean selected;
+    private boolean displayed;
+    private boolean androidView;
     private String bounds;
     private String originalBounds;
     private int X;
@@ -54,6 +56,8 @@ public class Widget {
 
     private String hint;
 
+    private Vector<Integer> widgetPath = new Vector<>();
+
     public Widget(String id, String clazz, String idByActivity){
         setId(id);
         setClazz(clazz);
@@ -66,7 +70,8 @@ public class Widget {
         this.idByActivity=idByActivity;
         usedAsStateDiff=false;
         hint="";
-
+        displayed = true;
+        androidView = false;
     }
 
     public boolean isHasChildren() {
@@ -255,6 +260,22 @@ public class Widget {
         return clickable || longClickable || scrollable || isEditable();
     }
 
+    public boolean isDisplayed() {
+        return displayed;
+    }
+
+    public void setIsDisplayed(boolean displayed) {
+        this.displayed = displayed;
+    }
+
+    public boolean isAndroidView() {
+        return androidView;
+    }
+
+    public void setIsAndroidView(boolean androidView) {
+        this.androidView = androidView;
+    }
+
     public int getX1() {
         return x1;
     }
@@ -363,6 +384,7 @@ public class Widget {
         children.add(widget);
     }
 
+    @JsonIgnore
     public String getNextChildsText() {
         String childText = "";
         for (Widget wg: getNextChildWithText())
@@ -565,11 +587,6 @@ public class Widget {
     }
 
 
-
-
-
-
-
     /**Used only for serialization purpose**/
     //TODO: copy objects
 
@@ -589,6 +606,13 @@ public class Widget {
     }
 
 
+    @JsonProperty("widgetPath")
+    public Vector<Integer> getWidgetPath() {
+        return widgetPath;
+    }
 
-
+    @JsonIgnore
+    public void setWidgetPath(Vector<Integer> widgetPath) {
+        this.widgetPath = widgetPath;
+    }
 }

@@ -41,6 +41,7 @@ import org.mate.exploration.genetic.termination.IterTerminationCondition;
 import org.mate.exploration.genetic.termination.NeverTerminationCondition;
 import org.mate.exploration.heuristical.HeuristicExploration;
 import org.mate.exploration.heuristical.RandomExploration;
+import org.mate.exploration.heuristical.ViewRanking;
 import org.mate.interaction.DeviceMgr;
 import org.mate.interaction.UIAbstractionLayer;
 import org.mate.model.IGUIModel;
@@ -468,6 +469,29 @@ public class MATE {
 
                     dumpCombinedCoverageIfNeeded(randomWalk);
                     dumpBestTestCasesToJSON(randomWalk);
+                } else if (explorationStrategy.equals("ViewRanking")) {
+                    uiAbstractionLayer = new UIAbstractionLayer(deviceMgr, packageName);
+                    MATE.log_acc("Activities");
+                    for (String s : EnvironmentManager.getActivityNames()) {
+                        MATE.log_acc("\t" + s);
+                    }
+
+                    final ViewRanking viewRanking = new ViewRanking(50);
+
+                    timeoutReached.set(false);
+
+                    TimeoutRun.timeoutRun(new Callable<Void>() {
+                        @Override
+                        public Void call() throws Exception {
+                            viewRanking.run();
+                            return null;
+                        }
+                    }, MATE.TIME_OUT);
+
+                    timeoutReached.set(true);
+
+                    dumpCombinedCoverageIfNeeded(viewRanking);
+                    dumpBestIndividualsToJSON(viewRanking);
                 }
             } else
                 MATE.log("Emulator is null");
@@ -490,6 +514,28 @@ public class MATE {
     private void dumpBestIndividualsToJSON(RandomExploration randomExploration) throws JsonProcessingException {
         List<IChromosome<TestCase>> individuals = randomExploration.getRepresentativeIndividual();
         IFitnessFunction<TestCase> fitnessFunction = randomExploration.getFitnessFunctions();
+
+        List<TestCase> testCases = new ArrayList<>();
+        for (IChromosome<TestCase> individual : individuals) {
+            TestCase testCase = individual.getValue();
+
+            testCase.addFitnessValue(fitnessFunction.getFitness(individual));
+            testCase.setChromosomeHash(individual.toString());
+
+            testCases.add(testCase);
+        }
+
+        takeScreenshotsToTestCases(testCases);
+
+        // write test cases to JSON and save in Server
+        ObjectMapper mapper = new ObjectMapper();
+        String jsonString = mapper.writeValueAsString(testCases);
+        EnvironmentManager.storeJsonTestCases(jsonString);
+    }
+
+    private void dumpBestIndividualsToJSON(ViewRanking viewRanking) throws JsonProcessingException {
+        List<IChromosome<TestCase>> individuals = viewRanking.getRepresentativeIndividual();
+        IFitnessFunction<TestCase> fitnessFunction = viewRanking.getFitnessFunctions();
 
         List<TestCase> testCases = new ArrayList<>();
         for (IChromosome<TestCase> individual : individuals) {

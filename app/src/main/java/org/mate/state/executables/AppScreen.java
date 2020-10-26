@@ -32,6 +32,7 @@ import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentat
 
 public class AppScreen {
 
+    private final Widget rootWidget;
     private String activityName;
     private String packageName;
     private Vector<Widget> widgets;
@@ -71,31 +72,35 @@ public class AppScreen {
         usableWidth = getUsableWidth();
 
         rootNodeInfo = ninfo;
-        readNodes(ninfo,null);
+        rootWidget = readNodes(ninfo,null, new Vector<Integer>());
     }
 
-    public void readNodes(AccessibilityNodeInfo obj, Widget parent){
+    public Widget readNodes(AccessibilityNodeInfo obj, Widget parent, Vector<Integer> widgetPath){
         Widget widget = null;
-        if (obj!=null) {
+        if (obj != null) {
             try {
                 widget = createWidget(obj, parent, activityName);
             }
             catch(StaleObjectException e){
                 MATE.log("StaleObjectException");
             }
-            if (widget!=null) {
+            if (widget != null) {
+                widget.setWidgetPath(widgetPath);
                 widgets.add(widget);
             }
 
-            for (int i=0; i<obj.getChildCount(); i++)
-                readNodes(obj.getChild(i),widget);
+            for (int i = 0; i < obj.getChildCount(); i++) {
+                Vector<Integer> childWidgetPath = new Vector<>(widgetPath);
+                childWidgetPath.add(i);
+                readNodes(obj.getChild(i), widget, childWidgetPath);
+            }
         }
+
+        return widget;
     }
 
     private Widget createWidget(AccessibilityNodeInfo obj, Widget parent, String activityName){
         String parentResourceId = this.getValidResourceIDFromTree(parent);
-
-
 
         String id = obj.getViewIdResourceName();
         if (id==null)
@@ -130,7 +135,9 @@ public class AppScreen {
         //if widget is an android view, otuside application scope
         if (res.startsWith("android")
                 || res.startsWith("com.google.android")
-                || res.startsWith("com.android")) return null;
+                || res.startsWith("com.android")) {
+            widget.setIsAndroidView(true);
+        }
 
         widget.setResourceID(res);
 
@@ -153,24 +160,24 @@ public class AppScreen {
 
         if (x1 < 0 || x2 < 0){
             this.hasToScrollLeft=true;
-            return null;
+            widget.setIsDisplayed(false);
         }
         if (x2 > usableWidth || x1 > usableWidth) {
             this.hasToScrollRight = true;
-            return null;
+            widget.setIsDisplayed(false);
         }
         if (y1 < 0 || y2 < 0) {
             this.hasToScrollUp = true;
-            return null;
+            widget.setIsDisplayed(false);
         }
         if (y2 > usableHeight||y1 > usableHeight) {
             this.hastoScrollDown = true;
-            return null;
+            widget.setIsDisplayed(false);
         }
 
         if (x1 == x2 || y1 == y2) {
             // this widget appears to be visible but actually it's not: it has zero width or height.
-            return null;
+            widget.setIsDisplayed(false);
         }
 
         widget.setCheckable(obj.isCheckable());
@@ -321,5 +328,9 @@ public class AppScreen {
         }
 
         return device.getDisplayWidth();
+    }
+
+    public Widget getRootWidget() {
+        return rootWidget;
     }
 }
